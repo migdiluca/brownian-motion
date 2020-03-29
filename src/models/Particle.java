@@ -1,7 +1,10 @@
-package Models;
+package models;
+
+import models.Vector;
 
 public class Particle {
-    private Position pos;
+    private Vector pos;
+    private Vector vel;
     private float radius;
     private int id;
 
@@ -9,13 +12,13 @@ public class Particle {
 
     }
 
-    public Particle(Position pos, float radius){
+    public Particle(Vector pos, float radius){
         this.pos = pos;
         this.radius = radius;
     }
 
     public Particle(float x, float y, float radius){
-        this.pos = new Position(x, y);
+        this.pos = new Vector(x, y);
         this.radius = radius;
     }
 
@@ -24,8 +27,12 @@ public class Particle {
         return squareActionRadiusPlusRadius >= otherParticle.pos.SquaredDistanceFrom(pos);
     }
 
-    public Position getPos(){
+    public Vector getPos(){
         return pos;
+    }
+
+    public Vector getVel(){
+        return vel;
     }
 
     public int getId() {
@@ -45,7 +52,7 @@ public class Particle {
     }
 
     public void setPosition(float x, float y){
-        this.pos = new Position(x, y);
+        this.pos = new Vector(x, y);
     }
 }
 
