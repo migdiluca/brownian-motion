@@ -10,6 +10,11 @@ public class Particle {
     private Index index;
     private int id;
 
+    public static final Particle LEFT_WALL = new Particle(),
+            RIGHT_WALL = new Particle(),
+            TOP_WALL = new Particle(),
+            BOTTOM_WALL = new Particle();
+
     public Particle() {
 
     }

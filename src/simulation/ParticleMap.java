@@ -1,16 +1,9 @@
 package simulation;
 
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
-import models.Collision;
+import com.sun.xml.internal.ws.wsdl.writer.document.Part;
+import models.*;
 
-import models.Index;
-import models.Particle;
-import models.ParticleList;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ParticleMap {
@@ -22,16 +15,24 @@ public class ParticleMap {
     private final int MAX_SPEED = 1000;
     private final int MAP_SIZE = 500;
 
+    private float currentTime;
+
     private List<Particle> particleList = new ArrayList<>();
     private PriorityQueue<Collision> collisionsQueue = new PriorityQueue<>();
     private ParticleList[][] map;
+
+    private Map<Particle, Integer> particlesVersions;
 
     private float indexSize;
     private int indexAmount;
 
     public ParticleMap(int particleNumber) {
+        this.particlesVersions = new HashMap<>();
+        this.currentTime = 0;
         calculateIndexes();
         generateParticles(particleNumber);
+
+        initializeParticleVersions();
     }
 
     private void calculateIndexes() {
@@ -45,6 +46,12 @@ public class ParticleMap {
         for(int i = 0; i < indexAmount; i++)
             for(int j = 0; j < indexAmount; j++)
                 map[i][j] = new ParticleList();
+    }
+
+    private void initializeParticleVersions(){
+        for(Particle particle : this.particleList){
+            this.particlesVersions.put(particle, 1);
+        }
     }
 
     private void generateParticles(int particleNumber) {
@@ -102,46 +109,38 @@ public class ParticleMap {
     }
 
     public void executeStep() {
-        if(!collisionsQueue.isEmpty())
-            calculateNextCollision();
-        else {
-            nextTimeStep();
+        boolean flag = true;
+        while(!this.collisionsQueue.isEmpty()){
+            Collision col = this.collisionsQueue.poll();
+
+            if(!isStale(col)){
+                col.executeCollision();
+                Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
+                for(Particle p : involvedParticles.keySet()){
+                    this.particlesVersions.compute(p, (k, v) -> v != null ? v+1 : null);
+                    calculateNewCollisions(p);
+                }
+            }
+
         }
+        nextTimeStep();
     }
 
     private void nextTimeStep() {
         particleList.forEach(particle -> calculateNewPositionAndIndex(particle, TIME_STEP));
     }
 
-    private void calculateNextCollision() {
-        Collision nextCollision = collisionsQueue.poll();
-        nextCollision.executeCollision();
+    private boolean isStale(Collision col){
+        Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
 
+        if(col.getTime()<this.currentTime)
+            return true;
+        for(Particle p : involvedParticles.keySet()){
+            if(this.particlesVersions.get(p) > involvedParticles.get(p))
+                return true;
+        }
 
-        // CON REMOVE IF
-//        collisionsQueue.removeIf((collision) -> {
-//            boolean mustRemove = !collision.collisionContainsParticle(nextCollision.getParticle1()) && !collision.collisionContainsParticle(nextCollision.getParticle2());
-//            if (!mustRemove) {
-//                collision.setTimeLeft(collision.getTimeLeft() - nextCollision.getTimeLeft());
-//                //calculateNewPositionAndIndex(collision.getParticle1());
-//                //calculateNewPositionAndIndex(collision.getParticle2());
-//            }
-//            return mustRemove;
-//        });
-
-        //  CON STREAMS
-        collisionsQueue = collisionsQueue.stream()
-                .filter(collision -> !collision.collisionContainsParticle(nextCollision.getParticle1()) && !collision.collisionContainsParticle(nextCollision.getParticle2()))
-                .peek(collision -> {
-                    collision.setTimeLeft(collision.getTimeLeft() - nextCollision.getTimeLeft());
-                    calculateNewPositionAndIndex(collision.getParticle1(), nextCollision.getTimeLeft());
-                    calculateNewPositionAndIndex(collision.getParticle2(), nextCollision.getTimeLeft());
-                })
-                .collect(Collectors.toCollection(PriorityQueue::new));
-
-        calculateNewCollisions(nextCollision.getParticle1());
-        calculateNewCollisions(nextCollision.getParticle2());
-
+        return false;
     }
 
     private void calculateNewPositionAndIndex(Particle particle, float time) {
@@ -162,14 +161,19 @@ public class ParticleMap {
 
                 if (xIndex >= 0 && yIndex >= 0 && xIndex < indexAmount && yIndex < indexAmount) {
                     for (Particle otherParticle : map[yIndex][xIndex].getParticles()) {
-                        Collision newCollision = new Collision(particle, otherParticle);
-                        if (!Float.isNaN(newCollision.getTimeLeft())) {
+                        Collision newCollision = new ParticleCollision(particle, otherParticle, particlesVersions.get(particle), particlesVersions.get(otherParticle), this.currentTime);
+                        if (!Float.isNaN(newCollision.getTime())) {
                             collisionsQueue.add(newCollision);
                         }
                     }
                 }
             }
         }
+
+        collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, 0, this.currentTime));
+        collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, 0, this.currentTime));
+        collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, MAP_SIZE, this.currentTime));
+        collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, MAP_SIZE, this.currentTime));
     }
 
 }
