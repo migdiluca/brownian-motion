@@ -65,10 +65,10 @@ public class Collision implements Comparable<Collision> {
 
         float J = (2*m1*m2*(dvx*dx + dvy*dy))/(sigma*(m1+m2));
 
-        float Jx = J*(x1-x2)/sigma, Jy = J*(y1-y2)/sigma;
+        float Jx =- J*(x1-x2)/sigma, Jy = -J*(y1-y2)/sigma;
 
         particle1.setVel(particle1.getVel().getX() + Jx/m1, particle1.getVel().getY() + Jy/m1);
-        particle2.setVel(particle2.getVel().getX() + Jx/m2, particle2.getVel().getY() + Jy/m2);
+        particle2.setVel(particle2.getVel().getX() - Jx/m2, particle2.getVel().getY() - Jy/m2);
     }
 
     public boolean collisionContainsParticle(Particle particle) {

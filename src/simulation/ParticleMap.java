@@ -39,7 +39,8 @@ public class ParticleMap {
     }
 
     private void generateParticles(int particleNumber) {
-        Particle bigParticle = new Particle((float) MAP_SIZE / 2, (float) MAP_SIZE / 2, 0, 0, BIG_RATIO);
+        //TODO: check mass
+        Particle bigParticle = new Particle((float) MAP_SIZE / 2, (float) MAP_SIZE / 2, 0, 0, BIG_RATIO, 1);
         particleList.add(bigParticle);
         addToMap(bigParticle);
 
@@ -64,8 +65,8 @@ public class ParticleMap {
             }
         }
 
-        //TODO: set a random initial velocity
-        Particle newParticle = new Particle(x, y, 0, 0, SMALL_RATIO);
+        //TODO: set a random initial velocity and mass
+        Particle newParticle = new Particle(x, y, 0, 0, SMALL_RATIO, 1);
         particleList.add(newParticle);
         addToMap(newParticle);
     }
