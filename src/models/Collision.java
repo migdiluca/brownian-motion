@@ -51,7 +51,24 @@ public class Collision implements Comparable<Collision> {
     }
 
     public void executeCollision() {
+        float dx = particle1.getPos().getX()-particle2.getPos().getX(),
+                dy = particle1.getPos().getY()-particle2.getPos().getY(),
+                dvx = particle1.getVel().getX()-particle2.getVel().getX(),
+                dvy = particle1.getVel().getY()-particle2.getVel().getY(),
+                m1 = particle1.getMass(),
+                m2 = particle2.getMass(),
+                x1 = particle1.getPos().getX(),
+                x2 = particle2.getPos().getX(),
+                y1 = particle1.getPos().getY(),
+                y2 = particle2.getPos().getY(),
+                sigma = (float)Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 
+        float J = (2*m1*m2*(dvx*dx + dvy*dy))/(sigma*(m1+m2));
+
+        float Jx = J*(x1-x2)/sigma, Jy = J*(y1-y2)/sigma;
+
+        particle1.setVel(particle1.getVel().getX() + Jx/m1, particle1.getVel().getY() + Jy/m1);
+        particle2.setVel(particle2.getVel().getX() + Jx/m2, particle2.getVel().getY() + Jy/m2);
     }
 
     public boolean collisionContainsParticle(Particle particle) {

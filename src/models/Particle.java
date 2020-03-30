@@ -6,6 +6,7 @@ public class Particle {
     private Vector pos;
     private Vector vel;
     private float radius;
+    private float mass;
     private Index index;
     private int id;
 
@@ -64,6 +65,14 @@ public class Particle {
 
     public void setIndex(Index index) {
         this.index = index;
+    }
+
+    public float getMass(){
+        return mass;
+    }
+
+    public void setVel(float x, float y){
+        this.vel = new Vector(x, y);
     }
 }
 
