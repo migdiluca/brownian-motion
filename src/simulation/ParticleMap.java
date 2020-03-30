@@ -119,6 +119,10 @@ public class ParticleMap {
 
             if(!isStale(col)){
                 col.executeCollision();
+
+                advanceTime(col.getTime()-currentTime);
+                this.currentTime = col.getTime();
+
                 Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
                 for(Particle p : involvedParticles.keySet()){
                     this.particlesVersions.compute(p, (k, v) -> v != null ? v+1 : null);
@@ -129,11 +133,11 @@ public class ParticleMap {
             }
 
         }
-        nextTimeStep();
+        advanceTime(TIME_STEP);
     }
 
-    private void nextTimeStep() {
-        particleList.forEach(particle -> calculateNewPositionAndIndex(particle, TIME_STEP));
+    private void advanceTime(float step) {
+        particleList.forEach(particle -> calculateNewPositionAndIndex(particle, step));
     }
 
     private boolean isStale(Collision col){
@@ -158,6 +162,7 @@ public class ParticleMap {
         particle.getIndex().setX((int) (newX / indexSize));
         particle.getIndex().setX((int) (newX / indexSize));
     }
+
 
     private void calculateNewCollisions(Particle particle) {
         for (int x = -1; x < 2; x++) {
