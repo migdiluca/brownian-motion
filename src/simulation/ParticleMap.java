@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class ParticleMap {
 
     //TODO:
-    private final float TIME_STEP = 5.0f;
+    private final float TIME_STEP = 0.02f;
     private final int SMALL_RATIO = 5;
     private final int BIG_RATIO = 50;
     private final int MAX_SPEED = 1000;
@@ -35,7 +35,14 @@ public class ParticleMap {
     private void calculateIndexes() {
         indexSize = 2 * MAX_SPEED * TIME_STEP + 2 * BIG_RATIO;
         indexAmount = (int) Math.ceil(MAP_SIZE / indexSize);
+        createMap(indexAmount);
+    }
+
+    private void createMap(int indexAmount) {
         map = new ParticleList[indexAmount][indexAmount];
+        for(int i = 0; i < indexAmount; i++)
+            for(int j = 0; j < indexAmount; j++)
+                map[i][j] = new ParticleList();
     }
 
     private void generateParticles(int particleNumber) {
@@ -64,8 +71,7 @@ public class ParticleMap {
             }
         }
 
-        //TODO: set a random initial velocity
-        Particle newParticle = new Particle(x, y, 0, 0, SMALL_RATIO);
+        Particle newParticle = new Particle(x, y, (float) Math.random() * MAX_SPEED, (float) Math.random() * MAX_SPEED, SMALL_RATIO);
         particleList.add(newParticle);
         addToMap(newParticle);
     }
@@ -75,6 +81,16 @@ public class ParticleMap {
         int yIndex = (int) Math.floor(particle.getPos().getY() / indexSize);
         particle.setIndex(new Index(xIndex, yIndex));
         map[yIndex][xIndex].add(particle);
+    }
+
+    public void printMap() {
+        for(int i = 0; i < indexAmount; i++)
+            for(int j = 0; j < indexAmount; j++) {
+                System.out.println("INDICE: (" + j + ", " + i + ")");
+                for (Particle p : map[i][j].getParticles()) {
+                    System.out.println(p.getPos());
+                }
+            }
     }
 
     private void calculateNextCollision() {
@@ -109,7 +125,13 @@ public class ParticleMap {
     }
 
     private void calculateNewPositionAndIndex(Particle particle, float time) {
+        float newX = particle.getPos().getX() + particle.getVel().getX() * time;
+        float newY = particle.getPos().getY() + particle.getVel().getY() * time;
 
+        particle.setPosition(newX, newY);
+
+        particle.getIndex().setX((int) (newX / indexSize));
+        particle.getIndex().setX((int) (newX / indexSize));
     }
 
     private void calculateNewCollisions(Particle particle) {
