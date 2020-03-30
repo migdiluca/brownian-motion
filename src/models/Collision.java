@@ -7,6 +7,9 @@ public class Collision implements Comparable<Collision> {
     private Particle particle1, particle2;
     private float timeLeft;
 
+    public Collision(float time) {
+        timeLeft = time;
+    }
     public Collision(Particle particle1, Particle particle2) {
         this.particle1 = particle1;
         this.particle2 = particle2;
@@ -47,6 +50,10 @@ public class Collision implements Comparable<Collision> {
         this.timeLeft = t;
     }
 
+    public void executeCollision() {
+
+    }
+
     public boolean collisionContainsParticle(Particle particle) {
         if(this.particle1.equals(particle))
             return true;
@@ -60,6 +67,14 @@ public class Collision implements Comparable<Collision> {
 
     public void setTimeLeft(float timeLeft) {
         this.timeLeft = timeLeft;
+    }
+
+    public Particle getParticle1() {
+        return particle1;
+    }
+
+    public Particle getParticle2() {
+        return particle2;
     }
 
     @Override
