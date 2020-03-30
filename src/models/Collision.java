@@ -25,9 +25,9 @@ public class Collision implements Comparable<Collision> {
                 R1 = particle1.getRadius(),
                 R2 = particle2.getRadius();
 
-        float A = (float)Math.pow(2*(b1*a1 + b2*a2), 2);
+        float A = (float)(Math.pow(a1, 2) + Math.pow(a2, 2));
         float B = (float)2*(b1*a1+b2*a2);
-        float C = (float)(Math.pow(R1+R2,2) + Math.pow(b1, 2) + Math.pow(b2, 2));
+        float C = (float)-(Math.pow(R1+R2,2) - Math.pow(b1, 2) - Math.pow(b2, 2));
 
         if(A == 0){
             this.timeLeft = Float.MAX_VALUE;
