@@ -12,14 +12,16 @@ public class Particle {
 
     }
 
-    public Particle(Vector pos, float radius){
+    public Particle(Vector pos, Vector vel, float radius){
         this.pos = pos;
         this.radius = radius;
+        this.vel = vel;
     }
 
-    public Particle(float x, float y, float radius){
+    public Particle(float x, float y, float vx, float vy, float radius){
         this.pos = new Vector(x, y);
         this.radius = radius;
+        this.vel = new Vector(vx, vy);
     }
 
     public boolean IsInsideActionRadiusOf(Particle otherParticle, float actionRadius){

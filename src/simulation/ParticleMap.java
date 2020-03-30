@@ -1,7 +1,7 @@
 package simulation;
 
-import Models.Collision;
-import Models.Particle;
+import models.Collision;
+import models.Particle;
 
 import java.util.List;
 import java.util.PriorityQueue;
