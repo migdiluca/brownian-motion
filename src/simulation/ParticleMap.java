@@ -1,5 +1,6 @@
 package simulation;
 
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import models.Collision;
 
 import models.Index;
@@ -9,6 +10,7 @@ import models.ParticleList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class ParticleMap {
@@ -71,7 +73,7 @@ public class ParticleMap {
             }
         }
 
-        Particle newParticle = new Particle(x, y, (float) Math.random() * MAX_SPEED, (float) Math.random() * MAX_SPEED, SMALL_RATIO);
+        Particle newParticle = new Particle(x, y, (float) Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1), (float) Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1), SMALL_RATIO);
         particleList.add(newParticle);
         addToMap(newParticle);
     }
@@ -91,6 +93,22 @@ public class ParticleMap {
                     System.out.println(p.getPos());
                 }
             }
+    }
+
+    public void printBigParticle() {
+        particleList.stream().filter(particle -> particle.getRadius() == BIG_RATIO).forEach(particle -> System.out.println(particle.getPos()));
+    }
+
+    public void executeStep() {
+        if(!collisionsQueue.isEmpty())
+            calculateNextCollision();
+        else {
+            nextTimeStep();
+        }
+    }
+
+    private void nextTimeStep() {
+        particleList.forEach(particle -> calculateNewPositionAndIndex(particle, TIME_STEP));
     }
 
     private void calculateNextCollision() {
