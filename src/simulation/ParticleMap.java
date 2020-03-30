@@ -114,7 +114,6 @@ public class ParticleMap {
     }
 
     public void executeStep() {
-        boolean flag = true;
         while(!this.collisionsQueue.isEmpty()){
             Collision col = this.collisionsQueue.poll();
 
@@ -125,6 +124,8 @@ public class ParticleMap {
                     this.particlesVersions.compute(p, (k, v) -> v != null ? v+1 : null);
                     calculateNewCollisions(p);
                 }
+
+                return;
             }
 
         }

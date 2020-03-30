@@ -4,7 +4,7 @@ public class SimulationHandler {
 
     public void run(int particles) {
         ParticleMap particleMap = new ParticleMap(particles);
-        for(int i = 0; i < 50000 ;i++) {
+        for(int i = 0; i < 10000 ;i++) {
             particleMap.executeStep();
         }
 
