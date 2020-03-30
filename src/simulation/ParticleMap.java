@@ -33,12 +33,17 @@ public class ParticleMap {
         generateParticles(particleNumber);
 
         initializeParticleVersions();
+        calculateInitialCollisions();
     }
 
     private void calculateIndexes() {
         indexSize = 2 * MAX_SPEED * TIME_STEP + 2 * BIG_RATIO;
         indexAmount = (int) Math.ceil(MAP_SIZE / indexSize);
         createMap(indexAmount);
+    }
+
+    private void calculateInitialCollisions() {
+        particleList.forEach(this::calculateNewCollisions);
     }
 
     private void createMap(int indexAmount) {
