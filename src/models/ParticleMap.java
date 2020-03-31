@@ -161,7 +161,7 @@ public class ParticleMap {
         particle.setPosition(newX, newY);
 
         particle.getIndex().setX((int) (newX / indexSize));
-        particle.getIndex().setX((int) (newX / indexSize));
+        particle.getIndex().setY((int) (newY / indexSize));
     }
 
     private void calculateNewCollisionsExceptInvolved(Particle particle, Map<Particle, Integer> involvedParticles) {
