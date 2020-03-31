@@ -173,7 +173,7 @@ public class ParticleMap {
                     for (Particle otherParticle : map[yIndex][xIndex].getParticles()) {
                         if (!particle.equals(otherParticle) && (involvedParticles == null || !involvedParticles.containsKey(otherParticle))) {
                             Collision newCollision = new ParticleCollision(particle, otherParticle, particlesVersions.get(particle), particlesVersions.get(otherParticle), this.currentTime);
-                            if (!Double.isNaN(newCollision.getTime())) {
+                            if (!Double.isInfinite(newCollision.getTime())) {
                                 collisionsQueue.add(newCollision);
                             }
                         }
