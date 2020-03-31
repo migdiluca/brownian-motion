@@ -1,4 +1,4 @@
-package simulation;
+package models;
 
 import com.sun.xml.internal.ws.wsdl.writer.document.Part;
 import models.*;
@@ -143,7 +143,7 @@ public class ParticleMap {
     private boolean isStale(Collision col){
         Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
 
-        if(col.getTime()<this.currentTime)
+        if(col.getTime()<this.currentTime || col.getTime() == Float.MAX_VALUE)
             return true;
         for(Particle p : involvedParticles.keySet()){
             if(this.particlesVersions.get(p) > involvedParticles.get(p))
@@ -187,4 +187,11 @@ public class ParticleMap {
         collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, MAP_SIZE, this.currentTime));
     }
 
+    public float getCurrentTime() {
+        return currentTime;
+    }
+
+    public List<Particle> getParticleList() {
+        return particleList;
+    }
 }

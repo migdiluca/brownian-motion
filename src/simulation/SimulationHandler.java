@@ -1,5 +1,7 @@
 package simulation;
 
+import models.ParticleMap;
+
 public class SimulationHandler {
 
     public void run(int particles) {
