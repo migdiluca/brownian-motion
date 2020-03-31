@@ -15,8 +15,8 @@ class Drawer:
     DISPLAY = None
     MAIN_SURFACE = None
     SECONDARY_SURFACE = None
-    xResolution = 1024
-    yResolution = 720
+    xResolution = 1440
+    yResolution = 1000
     WHITE = (255, 255, 255)
     RED = (255, 40, 40)
     BLUE = (20, 20, 245)
@@ -27,6 +27,7 @@ class Drawer:
     mapSize = 0
     X_OFFSET = 0
     Y_OFFSET = 0
+    bigParticlePositions = []
 
     def __init__(self, mapSize):
         pygame.init()
@@ -129,10 +130,21 @@ class Drawer:
         i = 0
         for position in positions:
             if i == 0:
+                self.bigParticlePositions.append(position)
                 pygame.draw.circle(self.DISPLAY, self.YELLOW, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.Y_OFFSET + self.boxSize * position[1])), self.boxSize * 50)
             else:
                 pygame.draw.circle(self.DISPLAY, self.BLUE, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.Y_OFFSET + self.boxSize * position[1])), self.boxSize * 5)
             i += 1
+
+        for position in self.bigParticlePositions:
+            pygame.gfxdraw.pixel(self.DISPLAY, int(self.X_OFFSET + (position[0] * self.boxSize)), int(self.Y_OFFSET + self.boxSize * position[1]), self.YELLOW)
+
+        meanArray = np.mean(self.bigParticlePositions, axis=0)
+        self.writeText(1, 1, "Particula grande:", 20, self.BLACK)
+        self.writeText(1, 20, "Posicion media", 20, self.BLACK)
+        self.writeText(1, 30, '(' + str(int(meanArray[0])) + ', ' + str(int(meanArray[1])) + ')', 20, self.BLACK)
+        self.writeText(1, 60, "Posicion actual", 20, self.BLACK)
+        self.writeText(1, 70, '(' + str(int((positions[0])[0])) + ', ' + str(int((positions[0])[1])) + ')', 20, self.BLACK)
 
     def update(self, positions):
         for event in pygame.event.get():
