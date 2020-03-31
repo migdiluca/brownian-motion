@@ -118,9 +118,10 @@ public class ParticleMap {
             Collision col = this.collisionsQueue.poll();
 
             if (!isStale(col)) {
-                col.executeCollision();
 
                 advanceTime(col.getTime() - currentTime);
+
+                col.executeCollision();
                 this.currentTime = col.getTime();
 
                 Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
@@ -187,13 +188,13 @@ public class ParticleMap {
 
     private void addWallsCollisions(Particle particle) {
         if (particle.getVel().getX() < 0)
-            collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, 0, this.currentTime));
-        if (particle.getVel().getY() < 0)
             collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, 0, this.currentTime));
+        if (particle.getVel().getY() < 0)
+            collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, 0, this.currentTime));
         if (particle.getVel().getX() > 0)
-            collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, MAP_SIZE, this.currentTime));
-        if (particle.getVel().getY() > 0)
             collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, MAP_SIZE, this.currentTime));
+        if (particle.getVel().getY() > 0)
+            collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, MAP_SIZE, this.currentTime));
     }
 
     public double getCurrentTime() {

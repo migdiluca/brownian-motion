@@ -27,7 +27,7 @@ public class WallCollision implements Collision {
 
     public void calculateTimeToCollision() {
         double v, r, radius = particle.getRadius();
-        if (type == HORIZONTAL) {
+        if (type == VERTICAL) {
             v = particle.getVel().getX();
             r = particle.getPos().getX();
         } else {
