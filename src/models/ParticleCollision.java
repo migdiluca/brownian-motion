@@ -1,5 +1,7 @@
 package models;
 
+import interfaces.Collision;
+
 import java.util.HashMap;
 import java.util.Map;
 

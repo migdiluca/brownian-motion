@@ -1,9 +1,11 @@
 package models;
 
+import interfaces.Collision;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class WallCollision implements Collision{
+public class WallCollision implements Collision {
     private Map<Particle, Integer> involvedParticles;
     private Particle particle;
     private int pos, type;

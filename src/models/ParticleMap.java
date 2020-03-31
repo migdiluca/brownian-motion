@@ -1,10 +1,9 @@
 package models;
 
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
+import interfaces.Collision;
 import models.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ParticleMap {
 
@@ -30,8 +29,9 @@ public class ParticleMap {
         this.particlesVersions = new HashMap<>();
         this.currentTime = 0;
         calculateIndexes();
+        System.out.println("Generating particles...");
         generateParticles(particleNumber);
-
+        System.out.println("Done generating");
         initializeParticleVersions();
         calculateInitialCollisions();
     }
@@ -48,13 +48,13 @@ public class ParticleMap {
 
     private void createMap(int indexAmount) {
         map = new ParticleList[indexAmount][indexAmount];
-        for(int i = 0; i < indexAmount; i++)
-            for(int j = 0; j < indexAmount; j++)
+        for (int i = 0; i < indexAmount; i++)
+            for (int j = 0; j < indexAmount; j++)
                 map[i][j] = new ParticleList();
     }
 
-    private void initializeParticleVersions(){
-        for(Particle particle : this.particleList){
+    private void initializeParticleVersions() {
+        for (Particle particle : this.particleList) {
             this.particlesVersions.put(particle, 1);
         }
     }
@@ -76,8 +76,8 @@ public class ParticleMap {
         double x = 0, y = 0;
         while (collision) {
             collision = false;
-            x = (double) Math.random() * MAP_SIZE;
-            y = (double) Math.random() * MAP_SIZE;
+            x = SMALL_RATIO +  Math.random() * (MAP_SIZE - (2 * SMALL_RATIO));
+            y = SMALL_RATIO +  Math.random() * (MAP_SIZE - (2 * SMALL_RATIO));
             for (int i = 0; i < particleList.size() && !collision; i++) {
                 Particle particle = particleList.get(i);
                 double distance = (double) Math.sqrt(Math.pow(x - particle.getPos().getX(), 2) + Math.pow(y - particle.getPos().getY(), 2)) - SMALL_RATIO - particle.getRadius();
@@ -100,8 +100,8 @@ public class ParticleMap {
     }
 
     public void printMap() {
-        for(int i = 0; i < indexAmount; i++)
-            for(int j = 0; j < indexAmount; j++) {
+        for (int i = 0; i < indexAmount; i++)
+            for (int j = 0; j < indexAmount; j++) {
                 System.out.println("INDICE: (" + j + ", " + i + ")");
                 for (Particle p : map[i][j].getParticles()) {
                     System.out.println(p.getPos());
@@ -114,19 +114,19 @@ public class ParticleMap {
     }
 
     public void executeStep() {
-        while(!this.collisionsQueue.isEmpty()){
+        while (!this.collisionsQueue.isEmpty()) {
             Collision col = this.collisionsQueue.poll();
 
-            if(!isStale(col)){
+            if (!isStale(col)) {
                 col.executeCollision();
 
-                advanceTime(col.getTime()-currentTime);
+                advanceTime(col.getTime() - currentTime);
                 this.currentTime = col.getTime();
 
                 Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
-                for(Particle p : involvedParticles.keySet()){
-                    this.particlesVersions.compute(p, (k, v) -> v != null ? v+1 : null);
-                    calculateNewCollisions(p);
+                for (Particle p : involvedParticles.keySet()) {
+                    this.particlesVersions.compute(p, (k, v) -> v != null ? v + 1 : null);
+                    calculateNewCollisionsExceptInvolved(p, involvedParticles);
                 }
 
                 return;
@@ -143,7 +143,7 @@ public class ParticleMap {
     private boolean isStale(Collision col){
         Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
 
-        if(col.getTime()<this.currentTime || col.getTime() == Double.MAX_VALUE)
+        if (col.getTime() < this.currentTime || col.getTime() == Double.MAX_VALUE)
             return true;
         for(Particle p : involvedParticles.keySet()){
             if(this.particlesVersions.get(p) > involvedParticles.get(p))
@@ -153,7 +153,7 @@ public class ParticleMap {
         return false;
     }
 
-    private void calculateNewPositionAndIndex(Particle particle, double time) {
+    private void calculateNewPositionAndIndex(Particle particle, float time) {
         double newX = particle.getPos().getX() + particle.getVel().getX() * time;
         double newY = particle.getPos().getY() + particle.getVel().getY() * time;
 
@@ -172,19 +172,51 @@ public class ParticleMap {
 
                 if (xIndex >= 0 && yIndex >= 0 && xIndex < indexAmount && yIndex < indexAmount) {
                     for (Particle otherParticle : map[yIndex][xIndex].getParticles()) {
-                        Collision newCollision = new ParticleCollision(particle, otherParticle, particlesVersions.get(particle), particlesVersions.get(otherParticle), this.currentTime);
-                        if (!Double.isNaN(newCollision.getTime())) {
-                            collisionsQueue.add(newCollision);
+                        if (!particle.equals(otherParticle)) {
+                            Collision newCollision = new ParticleCollision(particle, otherParticle, particlesVersions.get(particle), particlesVersions.get(otherParticle), this.currentTime);
+                            if (!Double.isNaN(newCollision.getTime())) {
+                                collisionsQueue.add(newCollision);
+                            }
                         }
                     }
                 }
             }
         }
 
-        collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, 0, this.currentTime));
-        collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, 0, this.currentTime));
-        collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, MAP_SIZE, this.currentTime));
-        collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, MAP_SIZE, this.currentTime));
+        addWallsCollisions(particle);
+    }
+
+    private void calculateNewCollisionsExceptInvolved(Particle particle, Map<Particle, Integer> involvedParticles) {
+        for (int x = -1; x < 2; x++) {
+            for (int y = -1; y < 2; y++) {
+                int xIndex = particle.getIndex().getX() + x;
+                int yIndex = particle.getIndex().getY() + y;
+
+                if (xIndex >= 0 && yIndex >= 0 && xIndex < indexAmount && yIndex < indexAmount) {
+                    for (Particle otherParticle : map[yIndex][xIndex].getParticles()) {
+                        if (!particle.equals(otherParticle) && !involvedParticles.containsKey(otherParticle)) {
+                            Collision newCollision = new ParticleCollision(particle, otherParticle, particlesVersions.get(particle), particlesVersions.get(otherParticle), this.currentTime);
+                            if (!Double.isNaN(newCollision.getTime())) {
+                                collisionsQueue.add(newCollision);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        addWallsCollisions(particle);
+    }
+
+    private void addWallsCollisions(Particle particle) {
+        if (particle.getVel().getX() < 0)
+            collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, 0, this.currentTime));
+        if (particle.getVel().getY() < 0)
+            collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, 0, this.currentTime));
+        if (particle.getVel().getX() > 0)
+            collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, MAP_SIZE, this.currentTime));
+        if (particle.getVel().getY() > 0)
+            collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, MAP_SIZE, this.currentTime));
     }
 
     public double getCurrentTime() {
