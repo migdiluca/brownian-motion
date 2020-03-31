@@ -153,7 +153,7 @@ public class ParticleMap {
         return false;
     }
 
-    private void calculateNewPositionAndIndex(Particle particle, float time) {
+    private void calculateNewPositionAndIndex(Particle particle, double time) {
         double newX = particle.getPos().getX() + particle.getVel().getX() * time;
         double newY = particle.getPos().getY() + particle.getVel().getY() * time;
 
