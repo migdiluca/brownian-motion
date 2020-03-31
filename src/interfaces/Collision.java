@@ -1,4 +1,6 @@
-package models;
+package interfaces;
+
+import models.Particle;
 
 import java.util.Map;
 
