@@ -93,20 +93,20 @@ public class ParticleCollision implements Collision {
         double C = (double)-(Math.pow(R1+R2,2) - Math.pow(b1, 2) - Math.pow(b2, 2));
 
         if(A == 0){
-            this.time = Double.MAX_VALUE;
+            this.time = Double.POSITIVE_INFINITY;
             return;
         }
 
         double insideRoot = (double)(Math.pow(B, 2) - 4*A*C);
         if(insideRoot < 0){
-            this.time = Double.MAX_VALUE;
+            this.time = Double.POSITIVE_INFINITY;
             return;
         }
 
         double t = (double)(-B - Math.sqrt(insideRoot))/(2*A);
 
         if(t < 0){
-            this.time = Double.MAX_VALUE;
+            this.time = Double.POSITIVE_INFINITY;
             return;
         }
 

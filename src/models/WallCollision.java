@@ -36,11 +36,11 @@ public class WallCollision implements Collision {
         }
 
         if (Double.compare(r+radius, pos) == 0 || Double.compare(r-radius, pos) == 0){
-            this.time = Double.MAX_VALUE;
+            this.time = Double.POSITIVE_INFINITY;
         }else if(r > pos && v > 0){
-            this.time = Double.MAX_VALUE;
+            this.time = Double.POSITIVE_INFINITY;
         }else if(r < pos && v < 0){
-            this.time = Double.MAX_VALUE;
+            this.time = Double.POSITIVE_INFINITY;
         }else{
             this.time += Math.abs((Math.abs(r-pos)/radius)/v);
         }

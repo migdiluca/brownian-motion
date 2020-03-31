@@ -143,7 +143,7 @@ public class ParticleMap {
     private boolean isStale(Collision col){
         Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
 
-        if (col.getTime() < this.currentTime || col.getTime() == Double.MAX_VALUE)
+        if (col.getTime() < this.currentTime || col.getTime() == Double.POSITIVE_INFINITY)
             return true;
         for(Particle p : involvedParticles.keySet()){
             if(this.particlesVersions.get(p) > involvedParticles.get(p))
