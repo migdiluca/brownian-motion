@@ -52,7 +52,7 @@ public class WallCollision implements Collision{
         float vx = particle.getVel().getX(),
             vy = particle.getVel().getY();
 
-        if(this.type == HORIZONTAL){
+        if(this.type == VERTICAL){
             particle.setVel(-vx, vy);
         }else{
             particle.setVel(vx, -vy);
