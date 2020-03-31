@@ -15,6 +15,8 @@ public class ParticleList {
         return particles;
     }
 
+    public boolean remove(Particle particle) { return  particles.remove(particle); }
+
     public void setParticles(List<Particle> particles) {
         this.particles = particles;
     }

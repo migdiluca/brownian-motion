@@ -1,5 +1,6 @@
 package models;
 
+import com.sun.xml.internal.ws.wsdl.writer.document.Part;
 import interfaces.Collision;
 import models.*;
 
@@ -8,7 +9,7 @@ import java.util.*;
 public class ParticleMap {
 
     //TODO:
-    private final double TIME_STEP = 0.02f;
+    private final double TIME_STEP = 0.000001;
     private final int SMALL_RATIO = 5;
     private final int BIG_RATIO = 50;
     private final int MAX_SPEED = 1000;
@@ -37,9 +38,11 @@ public class ParticleMap {
     }
 
     private void calculateIndexes() {
-        indexSize = 2 * MAX_SPEED * TIME_STEP + 2 * BIG_RATIO;
+        indexSize = (2 * MAX_SPEED * TIME_STEP) + (2 * BIG_RATIO);
         indexAmount = (int) Math.ceil(MAP_SIZE / indexSize);
         createMap(indexAmount);
+        System.out.println(indexSize);
+        System.out.println(indexAmount);
     }
 
     private void calculateInitialCollisions() {
@@ -160,8 +163,15 @@ public class ParticleMap {
 
         particle.setPosition(newX, newY);
 
-        particle.getIndex().setX((int) (newX / indexSize));
-        particle.getIndex().setY((int) (newY / indexSize));
+        int xNewIndex = (int) (newX / indexSize);
+        int yNewIndex = (int) (newY / indexSize);
+
+        if(xNewIndex != particle.getIndex().getX() || yNewIndex != particle.getIndex().getY()) {
+            map[particle.getIndex().getY()][particle.getIndex().getX()].remove(particle);
+            map[yNewIndex][xNewIndex].add(particle);
+            particle.getIndex().setX(xNewIndex);
+            particle.getIndex().setY(yNewIndex);
+        }
     }
 
     private void calculateNewCollisionsExceptInvolved(Particle particle, Map<Particle, Integer> involvedParticles) {

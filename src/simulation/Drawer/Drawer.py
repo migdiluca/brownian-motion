@@ -10,22 +10,23 @@ from matplotlib import pyplot as plt
 from matplotlib import colors
 from matplotlib import cm as cmx
 
-import os
-x = 100
-y = 0
-os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (x,y)
-
 
 class Drawer:
-    DISPLAY = 0
-    xResolution = 1920
-    yResolution = 1080
+    DISPLAY = None
+    MAIN_SURFACE = None
+    SECONDARY_SURFACE = None
+    xResolution = 1024
+    yResolution = 720
+    WHITE = (255, 255, 255)
+    RED = (255, 40, 40)
     BLUE = (20, 20, 245)
-    BACKGROUND = (108, 181, 245)
+    YELLOW = (252, 211, 3)
+    BACKGROUND = WHITE
     BLACK = (40, 40, 40)
     boxSize = 0
     mapSize = 0
     X_OFFSET = 0
+    Y_OFFSET = 0
 
     def __init__(self, mapSize):
         pygame.init()
@@ -37,7 +38,8 @@ class Drawer:
         height = self.yResolution
         self.boxSize = int(min(width / self.mapSize, height / self.mapSize))
         self.X_OFFSET = (width - (self.mapSize * self.boxSize)) / 2
-        self.DISPLAY = pygame.display.set_mode((self.xResolution, self.yResolution), pygame.FULLSCREEN, 32)
+        self.Y_OFFSET = (height - (self.mapSize * self.boxSize)) / 2
+        self.DISPLAY = pygame.display.set_mode((self.xResolution, self.yResolution), 0, 32)
         self.DISPLAY.fill(self.BACKGROUND)
 
     def drawScale(self):
@@ -66,12 +68,12 @@ class Drawer:
         self.DISPLAY.fill(self.BACKGROUND)
         w, h = pygame.display.get_surface().get_size()
         for x in range(0, self.mapSize):
-            self.drawSquare(self.X_OFFSET + (x * self.boxSize), 0, self.BLACK)
-            self.drawSquare(self.X_OFFSET + (x * self.boxSize), self.boxSize * (self.mapSize - 1), self.BLACK)
+            self.drawSquare(self.X_OFFSET + (x * self.boxSize), self.Y_OFFSET, self.BLACK)
+            self.drawSquare(self.X_OFFSET + (x * self.boxSize), self.Y_OFFSET + self.boxSize * (self.mapSize - 1), self.BLACK)
 
         for y in range(0, self.mapSize):
-            self.drawSquare(self.X_OFFSET, self.boxSize * y, self.BLACK)
-            self.drawSquare(self.X_OFFSET + self.boxSize * (self.mapSize - 1), self.boxSize * y, self.BLACK)
+            self.drawSquare(self.X_OFFSET, self.Y_OFFSET + (self.boxSize * y), self.BLACK)
+            self.drawSquare(self.X_OFFSET + self.boxSize * (self.mapSize - 1), self.Y_OFFSET + (self.boxSize * y), self.BLACK)
 
     def drawSquare(self, x, y, color, boxAmount=1):
         pygame.draw.rect(self.DISPLAY, color,
@@ -127,9 +129,9 @@ class Drawer:
         i = 0
         for position in positions:
             if i == 0:
-                pygame.draw.circle(self.DISPLAY, self.BLUE, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.boxSize * position[1])), self.boxSize * 50)
+                pygame.draw.circle(self.DISPLAY, self.YELLOW, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.Y_OFFSET + self.boxSize * position[1])), self.boxSize * 50)
             else:
-                pygame.draw.circle(self.DISPLAY, self.BLUE, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.boxSize * position[1])), self.boxSize * 5)
+                pygame.draw.circle(self.DISPLAY, self.BLUE, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.Y_OFFSET + self.boxSize * position[1])), self.boxSize * 5)
             i += 1
 
     def update(self, positions):
