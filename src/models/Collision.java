@@ -3,7 +3,7 @@ package models;
 import java.util.Map;
 
 public interface Collision extends Comparable<Collision> {
-    float getTime();
+    double getTime();
 
     void executeCollision();
 
@@ -13,7 +13,7 @@ public interface Collision extends Comparable<Collision> {
 
     @Override
     default int compareTo(Collision collision) {
-        float result = this.getTime() - collision.getTime();
+        double result = this.getTime() - collision.getTime();
         if(result < 0)
             return -1;
         else if (result == 0)

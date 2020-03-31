@@ -9,13 +9,13 @@ import java.util.stream.Collectors;
 public class ParticleMap {
 
     //TODO:
-    private final float TIME_STEP = 0.02f;
+    private final double TIME_STEP = 0.02f;
     private final int SMALL_RATIO = 5;
     private final int BIG_RATIO = 50;
     private final int MAX_SPEED = 1000;
     private final int MAP_SIZE = 500;
 
-    private float currentTime;
+    private double currentTime;
 
     private List<Particle> particleList = new ArrayList<>();
     private PriorityQueue<Collision> collisionsQueue = new PriorityQueue<>();
@@ -23,7 +23,7 @@ public class ParticleMap {
 
     private Map<Particle, Integer> particlesVersions;
 
-    private float indexSize;
+    private double indexSize;
     private int indexAmount;
 
     public ParticleMap(int particleNumber) {
@@ -61,7 +61,7 @@ public class ParticleMap {
 
     private void generateParticles(int particleNumber) {
         //TODO: check mass
-        Particle bigParticle = new Particle((float) MAP_SIZE / 2, (float) MAP_SIZE / 2, 0, 0, BIG_RATIO, 1);
+        Particle bigParticle = new Particle((double) MAP_SIZE / 2, (double) MAP_SIZE / 2, 0, 0, BIG_RATIO, 1);
         particleList.add(bigParticle);
         addToMap(bigParticle);
 
@@ -73,21 +73,21 @@ public class ParticleMap {
 
     private void generateRandomSmallParticle() {
         boolean collision = true;
-        float x = 0, y = 0;
+        double x = 0, y = 0;
         while (collision) {
             collision = false;
-            x = (float) Math.random() * MAP_SIZE;
-            y = (float) Math.random() * MAP_SIZE;
+            x = (double) Math.random() * MAP_SIZE;
+            y = (double) Math.random() * MAP_SIZE;
             for (int i = 0; i < particleList.size() && !collision; i++) {
                 Particle particle = particleList.get(i);
-                float distance = (float) Math.sqrt(Math.pow(x - particle.getPos().getX(), 2) + Math.pow(y - particle.getPos().getY(), 2)) - SMALL_RATIO - particle.getRadius();
+                double distance = (double) Math.sqrt(Math.pow(x - particle.getPos().getX(), 2) + Math.pow(y - particle.getPos().getY(), 2)) - SMALL_RATIO - particle.getRadius();
                 if (distance < 0)
                     collision = true;
             }
         }
 
         //TODO: set a random initial mass
-        Particle newParticle = new Particle(x, y, (float) Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1), (float) Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1), SMALL_RATIO, 1);
+        Particle newParticle = new Particle(x, y, (double) Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1), (double) Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1), SMALL_RATIO, 1);
         particleList.add(newParticle);
         addToMap(newParticle);
     }
@@ -136,14 +136,14 @@ public class ParticleMap {
         advanceTime(TIME_STEP);
     }
 
-    private void advanceTime(float step) {
+    private void advanceTime(double step) {
         particleList.forEach(particle -> calculateNewPositionAndIndex(particle, step));
     }
 
     private boolean isStale(Collision col){
         Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
 
-        if(col.getTime()<this.currentTime || col.getTime() == Float.MAX_VALUE)
+        if(col.getTime()<this.currentTime || col.getTime() == Double.MAX_VALUE)
             return true;
         for(Particle p : involvedParticles.keySet()){
             if(this.particlesVersions.get(p) > involvedParticles.get(p))
@@ -153,9 +153,9 @@ public class ParticleMap {
         return false;
     }
 
-    private void calculateNewPositionAndIndex(Particle particle, float time) {
-        float newX = particle.getPos().getX() + particle.getVel().getX() * time;
-        float newY = particle.getPos().getY() + particle.getVel().getY() * time;
+    private void calculateNewPositionAndIndex(Particle particle, double time) {
+        double newX = particle.getPos().getX() + particle.getVel().getX() * time;
+        double newY = particle.getPos().getY() + particle.getVel().getY() * time;
 
         particle.setPosition(newX, newY);
 
@@ -173,7 +173,7 @@ public class ParticleMap {
                 if (xIndex >= 0 && yIndex >= 0 && xIndex < indexAmount && yIndex < indexAmount) {
                     for (Particle otherParticle : map[yIndex][xIndex].getParticles()) {
                         Collision newCollision = new ParticleCollision(particle, otherParticle, particlesVersions.get(particle), particlesVersions.get(otherParticle), this.currentTime);
-                        if (!Float.isNaN(newCollision.getTime())) {
+                        if (!Double.isNaN(newCollision.getTime())) {
                             collisionsQueue.add(newCollision);
                         }
                     }
@@ -187,7 +187,7 @@ public class ParticleMap {
         collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, MAP_SIZE, this.currentTime));
     }
 
-    public float getCurrentTime() {
+    public double getCurrentTime() {
         return currentTime;
     }
 

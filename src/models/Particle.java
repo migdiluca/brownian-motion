@@ -5,8 +5,8 @@ import models.Vector;
 public class Particle {
     private Vector pos;
     private Vector vel;
-    private float radius;
-    private float mass;
+    private double radius;
+    private double mass;
     private Index index;
     private int id;
 
@@ -19,22 +19,22 @@ public class Particle {
 
     }
 
-    public Particle(Vector pos, Vector vel, float radius, float mass){
+    public Particle(Vector pos, Vector vel, double radius, double mass){
         this.pos = pos;
         this.radius = radius;
         this.vel = vel;
         this.mass = mass;
     }
 
-    public Particle(float x, float y, float vx, float vy, float radius, float mass){
+    public Particle(double x, double y, double vx, double vy, double radius, double mass){
         this.pos = new Vector(x, y);
         this.radius = radius;
         this.vel = new Vector(vx, vy);
         this.mass = mass;
     }
 
-    public boolean IsInsideActionRadiusOf(Particle otherParticle, float actionRadius){
-        float squareActionRadiusPlusRadius = (float) Math.pow(actionRadius + radius + otherParticle.radius, 2);
+    public boolean IsInsideActionRadiusOf(Particle otherParticle, double actionRadius){
+        double squareActionRadiusPlusRadius = (double) Math.pow(actionRadius + radius + otherParticle.radius, 2);
         return squareActionRadiusPlusRadius >= otherParticle.pos.SquaredDistanceFrom(pos);
     }
 
@@ -54,15 +54,15 @@ public class Particle {
         this.id = id;
     }
 
-    public float getRadius() {
+    public double getRadius() {
         return radius;
     }
 
-    public void setRadius(float radius) {
+    public void setRadius(double radius) {
         this.radius = radius;
     }
 
-    public void setPosition(float x, float y){
+    public void setPosition(double x, double y){
         this.pos = new Vector(x, y);
     }
 
@@ -74,11 +74,11 @@ public class Particle {
         this.index = index;
     }
 
-    public float getMass(){
+    public double getMass(){
         return mass;
     }
 
-    public void setVel(float x, float y){
+    public void setVel(double x, double y){
         this.vel = new Vector(x, y);
     }
 }

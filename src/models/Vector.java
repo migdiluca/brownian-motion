@@ -1,34 +1,34 @@
 package models;
 
 public class Vector {
-    private float x, y;
+    private double x, y;
 
-    public Vector(float x, float y){
+    public Vector(double x, double y){
         this.x = x;
         this.y = y;
     }
 
-    public float SquaredDistanceFrom(Vector otherPos){
+    public double SquaredDistanceFrom(Vector otherPos){
         return SquaredDistanceBetween(this, otherPos);
     }
 
-    public static float SquaredDistanceBetween(Vector pos1, Vector pos2){
-        return (float)(Math.pow(pos1.x-pos2.x, 2) + Math.pow(pos1.y-pos2.y, 2));
+    public static double SquaredDistanceBetween(Vector pos1, Vector pos2){
+        return (double)(Math.pow(pos1.x-pos2.x, 2) + Math.pow(pos1.y-pos2.y, 2));
     }
 
-    public float getX(){
+    public double getX(){
         return x;
     }
 
-    public float getY(){
+    public double getY(){
         return y;
     }
 
-    public void setX(float x) {
+    public void setX(double x) {
         this.x = x;
     }
 
-    public void setY(float y) {
+    public void setY(double y) {
         this.y = y;
     }
 

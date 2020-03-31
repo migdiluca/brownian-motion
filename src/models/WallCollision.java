@@ -7,11 +7,11 @@ public class WallCollision implements Collision{
     private Map<Particle, Integer> involvedParticles;
     private Particle particle;
     private int pos, type;
-    private float time;
+    private double time;
     public static final int HORIZONTAL = 0, VERTICAL = 1;
 
 
-    public WallCollision(Particle particle, int version, int type, int pos, float currentTime){
+    public WallCollision(Particle particle, int version, int type, int pos, double currentTime){
         this.type = type;
         this.pos = pos;
         this.particle = particle;
@@ -23,33 +23,35 @@ public class WallCollision implements Collision{
         calculateTimeToCollision();
     }
 
-    public void calculateTimeToCollision(){
-        float v, r;
-        if(type == HORIZONTAL){
+    public void calculateTimeToCollision() {
+        double v, r, radius = particle.getRadius();
+        if (type == HORIZONTAL) {
             v = particle.getVel().getX();
             r = particle.getPos().getX();
-        }else{
+        } else {
             v = particle.getVel().getY();
             r = particle.getPos().getY();
         }
 
-        if(r > pos && v > 0){
-            this.time = Float.MAX_VALUE;
+        if (Double.compare(r+radius, pos) == 0 || Double.compare(r-radius, pos) == 0){
+            this.time = Double.MAX_VALUE;
+        }else if(r > pos && v > 0){
+            this.time = Double.MAX_VALUE;
         }else if(r < pos && v < 0){
-            this.time = Float.MAX_VALUE;
+            this.time = Double.MAX_VALUE;
         }else{
-            this.time += Math.abs((r-pos)/v);
+            this.time += Math.abs((Math.abs(r-pos)/radius)/v);
         }
     }
 
     @Override
-    public float getTime() {
+    public double getTime() {
         return this.time;
     }
 
     @Override
     public void executeCollision() {
-        float vx = particle.getVel().getX(),
+        double vx = particle.getVel().getX(),
             vy = particle.getVel().getY();
 
         if(this.type == VERTICAL){
