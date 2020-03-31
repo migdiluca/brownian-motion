@@ -43,7 +43,7 @@ public class ParticleMap {
     }
 
     private void calculateInitialCollisions() {
-        particleList.forEach(this::calculateNewCollisions);
+        particleList.forEach(p->calculateNewCollisionsExceptInvolved(p, null));
     }
 
     private void createMap(int indexAmount) {
@@ -163,29 +163,6 @@ public class ParticleMap {
         particle.getIndex().setX((int) (newX / indexSize));
     }
 
-
-    private void calculateNewCollisions(Particle particle) {
-        for (int x = -1; x < 2; x++) {
-            for (int y = -1; y < 2; y++) {
-                int xIndex = particle.getIndex().getX() + x;
-                int yIndex = particle.getIndex().getY() + y;
-
-                if (xIndex >= 0 && yIndex >= 0 && xIndex < indexAmount && yIndex < indexAmount) {
-                    for (Particle otherParticle : map[yIndex][xIndex].getParticles()) {
-                        if (!particle.equals(otherParticle)) {
-                            Collision newCollision = new ParticleCollision(particle, otherParticle, particlesVersions.get(particle), particlesVersions.get(otherParticle), this.currentTime);
-                            if (!Double.isNaN(newCollision.getTime())) {
-                                collisionsQueue.add(newCollision);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        addWallsCollisions(particle);
-    }
-
     private void calculateNewCollisionsExceptInvolved(Particle particle, Map<Particle, Integer> involvedParticles) {
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
@@ -194,7 +171,7 @@ public class ParticleMap {
 
                 if (xIndex >= 0 && yIndex >= 0 && xIndex < indexAmount && yIndex < indexAmount) {
                     for (Particle otherParticle : map[yIndex][xIndex].getParticles()) {
-                        if (!particle.equals(otherParticle) && !involvedParticles.containsKey(otherParticle)) {
+                        if (!particle.equals(otherParticle) && (involvedParticles == null || !involvedParticles.containsKey(otherParticle))) {
                             Collision newCollision = new ParticleCollision(particle, otherParticle, particlesVersions.get(particle), particlesVersions.get(otherParticle), this.currentTime);
                             if (!Double.isNaN(newCollision.getTime())) {
                                 collisionsQueue.add(newCollision);
