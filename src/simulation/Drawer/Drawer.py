@@ -74,16 +74,18 @@ class Drawer:
 
     def drawCircles(self, positions):
         i = 0
+
+        self.bigParticlePositions.append(positions[0])
+
+        for position in self.bigParticlePositions:
+            pygame.gfxdraw.pixel(self.DISPLAY, int(self.X_OFFSET + (position[0] * self.boxSize)), int(self.Y_OFFSET + self.boxSize * position[1]), self.BIGCOLOR)
+
         for position in positions:
             if i == 0:
-                self.bigParticlePositions.append(position)
                 pygame.draw.circle(self.DISPLAY, self.BIGCOLOR, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.Y_OFFSET + self.boxSize * position[1])), self.boxSize * 50)
             else:
                 pygame.draw.circle(self.DISPLAY, self.SMALLCOLOR, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.Y_OFFSET + self.boxSize * position[1])), self.boxSize * 5)
             i += 1
-
-        for position in self.bigParticlePositions:
-            pygame.gfxdraw.pixel(self.DISPLAY, int(self.X_OFFSET + (position[0] * self.boxSize)), int(self.Y_OFFSET + self.boxSize * position[1]), self.BIGCOLOR)
 
         meanArray = np.mean(self.bigParticlePositions, axis=0)
         self.writeText(1, 1, "Particula grande:", 20, self.MAPBORDER)
