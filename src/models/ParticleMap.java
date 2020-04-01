@@ -9,7 +9,7 @@ import java.util.*;
 public class ParticleMap {
 
     //TODO:
-    private final double TIME_STEP = 0.000001;
+    private final double TIME_STEP = 0.01;
     private final int SMALL_RATIO = 5;
     private final int BIG_RATIO = 50;
     private final int MAX_SPEED = 1000;
@@ -46,7 +46,7 @@ public class ParticleMap {
     }
 
     private void calculateInitialCollisions() {
-        particleList.forEach(p->calculateNewCollisionsExceptInvolved(p, null));
+        particleList.forEach(p -> calculateNewCollisionsExceptInvolved(p, null));
     }
 
     private void createMap(int indexAmount) {
@@ -79,8 +79,8 @@ public class ParticleMap {
         double x = 0, y = 0;
         while (collision) {
             collision = false;
-            x = SMALL_RATIO +  Math.random() * (MAP_SIZE - (2 * SMALL_RATIO));
-            y = SMALL_RATIO +  Math.random() * (MAP_SIZE - (2 * SMALL_RATIO));
+            x = SMALL_RATIO + Math.random() * (MAP_SIZE - (2 * SMALL_RATIO));
+            y = SMALL_RATIO + Math.random() * (MAP_SIZE - (2 * SMALL_RATIO));
             for (int i = 0; i < particleList.size() && !collision; i++) {
                 Particle particle = particleList.get(i);
                 double distance = (double) Math.sqrt(Math.pow(x - particle.getPos().getX(), 2) + Math.pow(y - particle.getPos().getY(), 2)) - SMALL_RATIO - particle.getRadius();
@@ -118,22 +118,27 @@ public class ParticleMap {
 
     public void executeStep() {
         while (!this.collisionsQueue.isEmpty()) {
-            Collision col = this.collisionsQueue.poll();
+            Collision col = this.collisionsQueue.peek();
 
             if (!isStale(col)) {
 
-                advanceTime(col.getTime() - currentTime);
+                if (col.getTime() - currentTime <= TIME_STEP) {
+                    this.collisionsQueue.poll();
+                    advanceTime(col.getTime() - currentTime);
 
-                col.executeCollision();
-                this.currentTime = col.getTime();
+                    col.executeCollision();
 
-                Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
-                for (Particle p : involvedParticles.keySet()) {
-                    this.particlesVersions.compute(p, (k, v) -> v != null ? v + 1 : null);
-                    calculateNewCollisionsExceptInvolved(p, involvedParticles);
+                    Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
+                    for (Particle p : involvedParticles.keySet()) {
+                        this.particlesVersions.compute(p, (k, v) -> v != null ? v + 1 : null);
+                        calculateNewCollisionsExceptInvolved(p, involvedParticles);
+                    }
+                } else {
+                    advanceTime(TIME_STEP);
                 }
-
                 return;
+            } else {
+                this.collisionsQueue.poll();
             }
 
         }
@@ -142,15 +147,16 @@ public class ParticleMap {
 
     private void advanceTime(double step) {
         particleList.forEach(particle -> calculateNewPositionAndIndex(particle, step));
+        this.currentTime = step + this.currentTime;
     }
 
-    private boolean isStale(Collision col){
+    private boolean isStale(Collision col) {
         Map<Particle, Integer> involvedParticles = col.getInvolvedParticles();
 
         if (col.getTime() < this.currentTime || col.getTime() == Double.POSITIVE_INFINITY)
             return true;
-        for(Particle p : involvedParticles.keySet()){
-            if(this.particlesVersions.get(p) > involvedParticles.get(p))
+        for (Particle p : involvedParticles.keySet()) {
+            if (this.particlesVersions.get(p) > involvedParticles.get(p))
                 return true;
         }
 
@@ -166,12 +172,15 @@ public class ParticleMap {
         int xNewIndex = (int) (newX / indexSize);
         int yNewIndex = (int) (newY / indexSize);
 
-        if(xNewIndex != particle.getIndex().getX() || yNewIndex != particle.getIndex().getY()) {
+        if (xNewIndex != particle.getIndex().getX() || yNewIndex != particle.getIndex().getY()) {
             map[particle.getIndex().getY()][particle.getIndex().getX()].remove(particle);
             map[yNewIndex][xNewIndex].add(particle);
             particle.getIndex().setX(xNewIndex);
             particle.getIndex().setY(yNewIndex);
+            calculateNewCollisionsExceptInvolved(particle, null);
         }
+
+        addWallsCollisions(particle);
     }
 
     private void calculateNewCollisionsExceptInvolved(Particle particle, Map<Particle, Integer> involvedParticles) {
@@ -197,13 +206,16 @@ public class ParticleMap {
     }
 
     private void addWallsCollisions(Particle particle) {
-        if (particle.getVel().getX() < 0)
+        int restFactor = 1;
+        if (MAP_SIZE % indexSize > 0)
+            restFactor++;
+        if (particle.getVel().getX() < 0 && particle.getIndex().getX() == 0)
             collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, 0, this.currentTime));
-        if (particle.getVel().getY() < 0)
+        if (particle.getVel().getY() < 0 && particle.getIndex().getY() == 0)
             collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, 0, this.currentTime));
-        if (particle.getVel().getX() > 0)
+        if (particle.getVel().getX() > 0 && particle.getIndex().getX() >= indexAmount - restFactor)
             collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.VERTICAL, MAP_SIZE, this.currentTime));
-        if (particle.getVel().getY() > 0)
+        if (particle.getVel().getY() > 0 && particle.getIndex().getY() >= indexAmount - restFactor)
             collisionsQueue.add(new WallCollision(particle, particlesVersions.get(particle), WallCollision.HORIZONTAL, MAP_SIZE, this.currentTime));
     }
 
