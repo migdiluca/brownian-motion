@@ -116,12 +116,18 @@ public class ParticleMap {
         particleList.stream().filter(particle -> particle.getRadius() == BIG_RATIO).forEach(particle -> System.out.println(particle.getPos()));
     }
 
+
     public void executeStep() {
+        while(!executeStepAux()){
+
+        }
+    }
+
+    public boolean executeStepAux() {
         while (!this.collisionsQueue.isEmpty()) {
             Collision col = this.collisionsQueue.peek();
 
             if (!isStale(col)) {
-
                 if (col.getTime() - currentTime <= TIME_STEP) {
                     this.collisionsQueue.poll();
                     advanceTime(col.getTime() - currentTime);
@@ -133,16 +139,16 @@ public class ParticleMap {
                         this.particlesVersions.compute(p, (k, v) -> v != null ? v + 1 : null);
                         calculateNewCollisionsExceptInvolved(p, involvedParticles);
                     }
+                    return true;
                 } else {
                     advanceTime(TIME_STEP);
                 }
-                return;
             } else {
                 this.collisionsQueue.poll();
             }
-
         }
         advanceTime(TIME_STEP);
+        return false;
     }
 
     private void advanceTime(double step) {
