@@ -1,14 +1,18 @@
 import simulation.Animation;
 import simulation.CollisionStatisticsGrapher;
-import simulation.SimulationHandler;
 
 import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
-        CollisionStatisticsGrapher c = new CollisionStatisticsGrapher(2.0f, 10, 10);
-        c.run();
-        c.graph();
+        CollisionStatisticsGrapher c = new CollisionStatisticsGrapher(10.0f, 10, 10);
+
+        try{
+            c.run();
+        }catch (IOException e){
+            System.err.println(e);
+        }
+
         /*try{
             Animation animation = new Animation();
         }catch (IOException e){
