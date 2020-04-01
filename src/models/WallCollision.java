@@ -42,7 +42,7 @@ public class WallCollision implements Collision {
         }else if(r < pos && v < 0){
             this.time = Double.POSITIVE_INFINITY;
         }else{
-            this.time += Math.abs((Math.abs(r-pos)/radius)/v);
+            this.time += Math.abs((Math.abs(r-pos)-radius)/v);
         }
     }
 

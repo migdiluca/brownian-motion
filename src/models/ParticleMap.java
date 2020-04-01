@@ -15,6 +15,7 @@ public class ParticleMap {
     private final int MAP_SIZE = 500;
 
     private double currentTime;
+    private int numberOfCollisions;
 
     private List<Particle> particleList = new ArrayList<>();
     private PriorityQueue<Collision> collisionsQueue = new PriorityQueue<>();
@@ -28,6 +29,7 @@ public class ParticleMap {
     public ParticleMap(int particleNumber) {
         this.particlesVersions = new HashMap<>();
         this.currentTime = 0;
+        this.numberOfCollisions = 0;
         calculateIndexes();
         System.out.println("Generating particles...");
         generateParticles(particleNumber);
@@ -118,6 +120,7 @@ public class ParticleMap {
             Collision col = this.collisionsQueue.poll();
 
             if (!isStale(col)) {
+                this.numberOfCollisions++;
 
                 advanceTime(col.getTime() - currentTime);
 
@@ -168,6 +171,7 @@ public class ParticleMap {
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 int xIndex = particle.getIndex().getX() + x;
+
                 int yIndex = particle.getIndex().getY() + y;
 
                 if (xIndex >= 0 && yIndex >= 0 && xIndex < indexAmount && yIndex < indexAmount) {
@@ -203,5 +207,9 @@ public class ParticleMap {
 
     public List<Particle> getParticleList() {
         return particleList;
+    }
+
+    public int getNumberOfCollisions() {
+        return numberOfCollisions;
     }
 }
