@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.List;
 
 public class Animation {
-    private static final int NUMBER_OF_ITERATIONS = 1000;
+    private static final int NUMBER_OF_ITERATIONS = 50000;
 
     public Animation() throws IOException {
         ParticleMap particleMap = new ParticleMap(300);
@@ -26,9 +26,10 @@ public class Animation {
                     br.write(particle.getPos().getX() +" "+particle.getPos().getY()+'\n');
                 }
                 particleMap.executeStep();
-
             }
         }
+
+        particleMap.printBigParticle();
 
     }
 
