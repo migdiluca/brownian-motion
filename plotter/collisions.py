@@ -78,12 +78,9 @@ def accumulated_collisions(histograms):
 
     accumulated_values = []
     for i in range(len(reduced_histograms)):
-        new_row = []
-        for j in range(len(reduced_histograms[i])):
-            if j-1 >= 0:
-                new_row.append(reduced_histograms[i][j] + new_row[j-1])
-            else:
-                new_row.append(reduced_histograms[i][j])
+        new_row = [reduced_histograms[i][0]]
+        for j in range(len(reduced_histograms[i]))[1::]:
+            new_row.append(reduced_histograms[i][j] + new_row[j-1])
         accumulated_values.append(new_row)
 
     times = histograms[0][1][1::]
@@ -103,7 +100,7 @@ def accumulated_collisions(histograms):
 def pdf_of_collisions(histograms):
     reduced_histograms = [histogram[0] for histogram in histograms]
 
-    normalized_histograms = [[i/max(histogram) for i in histogram] for histogram in reduced_histograms]
+    normalized_histograms = [[i/sum(histogram) for i in histogram] for histogram in reduced_histograms]
 
     means = [np.mean(list(values)) for values in zip(*normalized_histograms)]
     stds = [np.std(list(values)) for values in zip(*normalized_histograms)]
