@@ -1,4 +1,5 @@
 from plotter.collisions import collisions
+from plotter.velocities import velocities
 
 
 def main():
@@ -32,7 +33,7 @@ def display_options():
 def run_plotter(option):
     options = {
         1: collisions,
-        2: not_implemented,
+        2: velocities,
         3: not_implemented,
         4: not_implemented,
         5: not_implemented
