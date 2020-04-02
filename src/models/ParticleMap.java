@@ -43,8 +43,6 @@ public class ParticleMap {
         indexSize = (2 * MAX_SPEED * TIME_STEP) + (2 * BIG_RATIO);
         indexAmount = (int) Math.ceil(MAP_SIZE / indexSize);
         createMap(indexAmount);
-        System.out.println(indexSize);
-        System.out.println(indexAmount);
     }
 
     private void calculateInitialCollisions() {
@@ -91,8 +89,16 @@ public class ParticleMap {
             }
         }
 
+        double vel1 = Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1);
+        double vel2 = Math.random() * Math.sqrt(Math.pow(MAX_SPEED, 2) - Math.pow(vel1, 2)) * (Math.random() >= 0.5 ? 1 : -1);
+        if(Math.random() > 0.5) {
+            double aux = vel2;
+            vel2 = vel1;
+            vel1 = aux;
+        }
+
         //TODO: set a random initial mass
-        Particle newParticle = new Particle(x, y, (double) Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1), (double) Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1), SMALL_RATIO, 1);
+        Particle newParticle = new Particle(x, y, vel1, vel2, SMALL_RATIO, 1);
         particleList.add(newParticle);
         addToMap(newParticle);
     }
