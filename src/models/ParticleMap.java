@@ -89,18 +89,19 @@ public class ParticleMap {
             }
         }
 
-        double vel1 = Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1);
-        double vel2 = Math.random() * Math.sqrt(Math.pow(MAX_SPEED, 2) - Math.pow(vel1, 2)) * (Math.random() >= 0.5 ? 1 : -1);
-        if(Math.random() > 0.5) {
-            double aux = vel2;
-            vel2 = vel1;
-            vel1 = aux;
-        }
-
         //TODO: set a random initial mass
-        Particle newParticle = new Particle(x, y, vel1, vel2, SMALL_RATIO, 1);
+        Vector vel = generateRandomSpeed();
+        Particle newParticle = new Particle(x, y, vel.getX(), vel.getY(), SMALL_RATIO, 1);
         particleList.add(newParticle);
         addToMap(newParticle);
+    }
+
+    private Vector generateRandomSpeed() {
+        double module = Math.random() * MAX_SPEED;
+        double vel1 = Math.random() * module * (Math.random() >= 0.5 ? 1 : -1);
+        double vel2 = Math.random() * Math.sqrt(Math.pow(module,2) - Math.pow(vel1, 2)) * (Math.random() >= 0.5 ? 1 : -1);
+
+        return new Vector(vel1, vel2);
     }
 
     private void addToMap(Particle particle) {
