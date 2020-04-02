@@ -1,4 +1,5 @@
 from plotter.collisions import collisions
+from plotter.coefficient_of_diffusion import coefficient_of_diffusion
 
 
 def main():
@@ -38,7 +39,7 @@ options = {
     1: ("Collisions", collisions),
     2: ("Speed", not_implemented),
     3: ("Particle trajectory", not_implemented),
-    4: ("Coefficient of diffusion", not_implemented),
+    4: ("Coefficient of diffusion", coefficient_of_diffusion),
     5: ("Graph all", not_implemented)
 }
 

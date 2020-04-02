@@ -1,12 +1,13 @@
-import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+import plotter.utils as utils
+
 
 def collisions():
     print("-> Collisions selected")
-    default = ask_boolean("Do you want to use default values? 'y' for yes and 'n' for no : ")
+    default = utils.ask_boolean("Do you want to use default values? 'y' for yes and 'n' for no : ")
 
     step = 0.5
     min = 0
@@ -24,40 +25,13 @@ def collisions():
 
 
 def ask_for_inputs():
-    min = ask_for_float("Enter the minimum value for the time of the first collision : ")
-    max = ask_for_float("Enter the maximum value for the time of the last collision : ")
-    step = ask_for_float("Enter the step size for the bins : ")
+    min = utils.ask_for_float("Enter the minimum value for the time of the first collision : ")
+    max = utils.ask_for_float("Enter the maximum value for the time of the last collision : ")
+    step = utils.ask_for_float("Enter the step size for the bins : ")
     return step, min, max
 
 
-def ask_for_float(input_message, error_message="Please enter a valid option"):
-    value = 0
-    flag = True
-    while flag:
-        input_value = input(input_message)
-        try:
-            value = float(input_value)
-            flag = False
-        except ValueError:
-            print(error_message)
-    return value
 
-
-def ask_boolean(input_message, error_message="Please enter a valid option"):
-    value = False
-    flag = True
-    while flag:
-        input_value = input(input_message)
-        if input_value == "y":
-            value = True
-            flag = False
-        elif input_value == "n":
-            value = False
-            flag = False
-        else:
-            print(error_message)
-
-    return value
 
 
 def read_file_collisions():
