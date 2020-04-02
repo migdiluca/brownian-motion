@@ -10,10 +10,10 @@ public class ParticleMap {
 
     //TODO:
     private final double TIME_STEP = 0.01;
-    private final int SMALL_RATIO = 5;
-    private final int BIG_RATIO = 50;
-    private final int MAX_SPEED = 1000;
-    private final int MAP_SIZE = 500;
+    private final double SMALL_RATIO = 0.005;
+    private final double BIG_RATIO = 0.05;
+    private final double MAX_SPEED = 1;
+    private final double MAP_SIZE = 0.5;
 
     private double currentTime;
     private int numberOfCollisions;
@@ -63,8 +63,7 @@ public class ParticleMap {
     }
 
     private void generateParticles(int particleNumber) {
-        //TODO: check mass
-        Particle bigParticle = new Particle((double) MAP_SIZE / 2, (double) MAP_SIZE / 2, 0, 0, BIG_RATIO, 1);
+        Particle bigParticle = new Particle((double) MAP_SIZE / 2, (double) MAP_SIZE / 2, 0, 0, BIG_RATIO, 100);
         particleList.add(bigParticle);
         addToMap(bigParticle);
 
@@ -89,9 +88,8 @@ public class ParticleMap {
             }
         }
 
-        //TODO: set a random initial mass
         Vector vel = generateRandomSpeed();
-        Particle newParticle = new Particle(x, y, vel.getX(), vel.getY(), SMALL_RATIO, 1);
+        Particle newParticle = new Particle(x, y, vel.getX(), vel.getY(), SMALL_RATIO, 0.1);
         particleList.add(newParticle);
         addToMap(newParticle);
     }
@@ -99,8 +97,7 @@ public class ParticleMap {
     private Vector generateRandomSpeed() {
         double module = Math.random() * MAX_SPEED;
         double vel1 = Math.random() * module * (Math.random() >= 0.5 ? 1 : -1);
-        double vel2 = Math.random() * Math.sqrt(Math.pow(module,2) - Math.pow(vel1, 2)) * (Math.random() >= 0.5 ? 1 : -1);
-
+        double vel2 = Math.sqrt(Math.pow(module,2) - Math.pow(vel1, 2)) * (Math.random() >= 0.5 ? 1 : -1);
         return new Vector(vel1, vel2);
     }
 

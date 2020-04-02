@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def readFile():
-    file_location = "../output_files/velocities/velocities0"
+def readFile(number):
+    file_location = "../output_files/velocities/velocities" + str(number)
     velocitiesFile = open(file_location, 'r')
 
     velocitiesLines = velocitiesFile.readlines()
@@ -27,14 +27,15 @@ def readOneTimeVelocities(lines):
 
     velocities = []
     while lineIndex < len(lines) - 1 and line[0] != '#':
-        velocities.append(float(line) / 1000)
+        velocities.append(float(line)
+                          )
         lineIndex += 1
         line = lines[lineIndex]
 
     return velocities, lineIndex
 
-def velocities():
-    velocities = readFile()
+def velocities(number):
+    velocities = readFile(number)
 
     maxValue = max([max(velocities[0]), max(velocities[1])])
     bins = np.arange(0, maxValue, 0.05)
@@ -47,3 +48,6 @@ def velocities():
     plt.ylabel('Probabilidad')
     plt.legend(labels=['Velocidad inicial','Velocidad a 2/3 de la simulacion'])
     plt.show()
+
+for i in range(0,10):
+    velocities(i)
