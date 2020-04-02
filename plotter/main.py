@@ -1,5 +1,6 @@
 from plotter.collisions import collisions
 from plotter.coefficient_of_diffusion import coefficient_of_diffusion
+from plotter.velocities import velocities
 
 
 def main():

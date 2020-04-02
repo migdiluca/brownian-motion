@@ -8,12 +8,13 @@ import java.util.Map;
 public class WallCollision implements Collision {
     private Map<Particle, Integer> involvedParticles;
     private Particle particle;
-    private int pos, type;
+    private int type;
+    private double pos;
     private double time;
     public static final int HORIZONTAL = 0, VERTICAL = 1;
 
 
-    public WallCollision(Particle particle, int version, int type, int pos, double currentTime){
+    public WallCollision(Particle particle, int version, int type, double pos, double currentTime){
         this.type = type;
         this.pos = pos;
         this.particle = particle;
