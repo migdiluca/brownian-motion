@@ -1,4 +1,5 @@
 from plotter.collisions import collisions
+from plotter.coefficient_of_diffusion import coefficient_of_diffusion
 from plotter.velocities import velocities
 
 
@@ -10,11 +11,8 @@ def main():
 def display_options():
     print("Simulation plotter. Please be sure that you ran the simulation first.")
     print("Select an option:")
-    print(" 1. Collisions")
-    print(" 2. Speed")
-    print(" 3. Particle trajectory")
-    print(" 4. Coefficient of diffusion")
-    print(" 5. Graph all")
+    for i in range(len(options)):
+        print(" "+str(i+1)+". "+options[i+1][0])
 
     option = 0
     flag = True
@@ -22,7 +20,7 @@ def display_options():
         input_value = input("Enter your option : ")
         try:
             option = int(input_value)
-            if 5 >= option >= 1:
+            if len(options)-1 >= option-1 >= 0:
                 flag = False
         except ValueError:
             print("Please enter a valid option")
@@ -31,19 +29,20 @@ def display_options():
 
 
 def run_plotter(option):
-    options = {
-        1: collisions,
-        2: velocities,
-        3: not_implemented,
-        4: not_implemented,
-        5: not_implemented
-    }
-    options[option]()
+    options[option][1]()
 
 
 def not_implemented():
     print("Sorry, we haven't implemented that function yet")
 
+
+options = {
+    1: ("Collisions", collisions),
+    2: ("Speed", not_implemented),
+    3: ("Particle trajectory", not_implemented),
+    4: ("Coefficient of diffusion", coefficient_of_diffusion),
+    5: ("Graph all", not_implemented)
+}
 
 if __name__ == "__main__":
     main()

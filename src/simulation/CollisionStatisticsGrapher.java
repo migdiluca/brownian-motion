@@ -16,7 +16,7 @@ public class CollisionStatisticsGrapher {
     private int numberOfExecutions;
 
 
-    public CollisionStatisticsGrapher(float durationTime, int numberOfExecutions, int numberOfHistogramBars){
+    public CollisionStatisticsGrapher(float durationTime, int numberOfExecutions){
         this.durationTime = durationTime;
         this.numberOfExecutions = numberOfExecutions;
     }

@@ -29,6 +29,8 @@ public class ParticleMap {
 
     private Map<Particle, Integer> particlesVersions;
 
+    private Particle bigParticle;
+
     private double indexSize;
     private int indexAmount;
 
@@ -81,6 +83,8 @@ public class ParticleMap {
         Particle bigParticle = new Particle((double) MAP_SIZE / 2, (double) MAP_SIZE / 2, 0, 0, BIG_RATIO, 0.1);
         particleList.add(bigParticle);
         addToMap(bigParticle);
+
+        this.bigParticle = bigParticle;
 
         while (particleNumber > 0) {
             generateRandomSmallParticle();
@@ -265,5 +269,9 @@ public class ParticleMap {
 
     public int getNumberOfCollisions() {
         return numberOfCollisions;
+    }
+
+    public Particle getBigParticle(){
+        return this.bigParticle;
     }
 }
