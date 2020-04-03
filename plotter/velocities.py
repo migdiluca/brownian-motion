@@ -18,6 +18,7 @@ def readFile(number):
 
     return velocities
 
+
 def readOneTimeVelocities(lines):
     lineIndex = 0
     line = lines[0]

@@ -10,8 +10,8 @@ def coefficient_of_diffusion():
     print("-> Coefficient of diffusion selected")
 
     default = utils.ask_boolean("Do you want to use default values? 'y' for yes and 'n' for no : ")
-    starting_time = 0
-    ending_time = 11
+    starting_time = 70
+    ending_time = 150
     step_size = 1
     if not default:
         starting_time = utils.ask_for_float("Enter starting time for measuring big particle movement : ")
@@ -22,24 +22,47 @@ def coefficient_of_diffusion():
         starting_time) + ", ending_time = " + str(ending_time) + ", step_size: "
           + str(step_size) + ".")
 
+    big_particle(starting_time, ending_time, step_size)
+
+    small_particle(starting_time, ending_time, step_size)
+
+
+def big_particle(starting_time, ending_time, step_size):
     starting_index = int(starting_time / step_size)
 
-    print("Reading files")
-    executions = read_file_particle_positions()
+    print("[BIG PARTICLE] Reading files")
+    executions = read_file_particle_positions("big_particle")
 
     times = np.arange(0, ending_time, step_size)
 
-    print("Separating data in bins and calculating mean position")
+    print("[BIG PARTICLE] Separating data in bins and calculating mean position")
     bins = create_bins(times, executions)
 
-    print("Calculating squared distances for each execution")
+    print("[BIG PARTICLE] Calculating squared distances for each execution")
     bins_with_sd = msd(bins[starting_index:])
 
     plot(times[starting_index:], bins_with_sd)
 
 
-def read_file_particle_positions():
-    folder = "..\\output_files\\coefficient_of_diffusion"
+def small_particle(starting_time, ending_time, step_size):
+    starting_index = int(starting_time / step_size)
+
+    print("[SMALL PARTICLE] Reading files")
+    executions = read_file_particle_positions("small_particle")
+
+    times = np.arange(0, ending_time, step_size)
+
+    print("[SMALL PARTICLE] Separating data in bins and calculating mean position")
+    bins = create_bins(times, executions)
+
+    print("[SMALL PARTICLE] Calculating squared distances for each execution")
+    bins_with_sd = msd(bins[starting_index:])
+
+    plot(times[starting_index:], bins_with_sd)
+
+
+def read_file_particle_positions(dir):
+    folder = "..\\output_files\\coefficient_of_diffusion\\"+dir
     values = []
     for filename in os.listdir(folder):
         with open(folder + "\\" + filename, 'r') as f:  # open in readonly mode
@@ -75,7 +98,8 @@ def values_in_range(times, execution):
             elif value[0] >= end_t:
                 break
         if len(new_values) == 0:
-            result.append(result[-1])
+            last_val = result[-1]
+            result.append(((start_t+end_t)/2, last_val[1], last_val[2]))
         elif len(new_values) == 1:
             result.append(new_values[0])
         else:

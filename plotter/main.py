@@ -36,12 +36,19 @@ def not_implemented():
     print("Sorry, we haven't implemented that function yet")
 
 
+def graph_all():
+    collisions()
+
+    velocities()
+    coefficient_of_diffusion()
+
+
 options = {
     1: ("Collisions", collisions),
-    2: ("Speed", not_implemented),
+    2: ("Speed", velocities),
     3: ("Particle trajectory", not_implemented),
     4: ("Coefficient of diffusion", coefficient_of_diffusion),
-    5: ("Graph all", not_implemented)
+    5: ("Graph all", graph_all)
 }
 
 if __name__ == "__main__":

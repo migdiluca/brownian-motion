@@ -14,7 +14,7 @@ public class Main {
             System.err.println(e);
         }*/
 
-        BigParticlePositions bpp = new BigParticlePositions(10.0f, 10);
+        BigParticlePositions bpp = new BigParticlePositions(200.0f, 10);
 
         try{
             bpp.run();
