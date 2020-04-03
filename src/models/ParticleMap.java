@@ -108,9 +108,8 @@ public class ParticleMap {
 
     private Vector generateRandomSpeed() {
         double module = Math.random() * MAX_SPEED;
-        double vel1 = Math.random() * module * (Math.random() >= 0.5 ? 1 : -1);
-        double vel2 = Math.sqrt(Math.pow(module,2) - Math.pow(vel1, 2)) * (Math.random() >= 0.5 ? 1 : -1);
-        return new Vector(vel1, vel2);
+        double angle = Math.random() * 2 * Math.PI;
+        return new Vector(Math.cos(angle) * module, Math.sin(angle) * module);
     }
 
     private void addToMap(Particle particle) {
