@@ -1,6 +1,7 @@
-from plotter.collisions import collisions
-from plotter.coefficient_of_diffusion import coefficient_of_diffusion
-from plotter.velocities import velocities
+from collisions import collisions
+from coefficient_of_diffusion import coefficient_of_diffusion
+from velocities import velocities
+from big_positions import big_positions
 
 
 def main():
@@ -46,7 +47,7 @@ def graph_all():
 options = {
     1: ("Collisions", collisions),
     2: ("Speed", velocities),
-    3: ("Particle trajectory", not_implemented),
+    3: ("Particle trajectory", big_positions),
     4: ("Coefficient of diffusion", coefficient_of_diffusion),
     5: ("Graph all", graph_all)
 }

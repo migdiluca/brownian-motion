@@ -25,7 +25,7 @@ def readPosition(line):
 
     return positions
 
-def positions():
+def big_positions():
     fig = plt.figure()
     ax = plt.subplot(111)
     ax.set_xlim(0, 0.5)
@@ -33,10 +33,10 @@ def positions():
     for i in range(0, 3):
         positions, speed = readFile(i)
         x, y = zip(*positions)
-        ax.plot(x, y, label = "V = " + str(speed) + "m/s")
+        ax.plot(x, y, label = "Vm=" + str(speed) + "m/s")
 
     ax.plot(0.25, 0.25, marker = 'o')
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05), shadow=True, ncol=3)
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), shadow=True, ncol=4)
+    plt.xlabel('x')
+    plt.ylabel('y')
     plt.show()
-
-positions()
