@@ -23,18 +23,21 @@ class Drawer:
     YELLOW = (252, 211, 3)
     BLACK = (25, 25, 25)
     BACKGROUND = BLACK
+    TRACECOLOR = RED
     MAPBORDER = WHITE
     BIGCOLOR = YELLOW
     SMALLCOLOR = BLUE
     boxSize = 0
     mapSize = 0
+    maxSpeed = 0
     X_OFFSET = 0
     Y_OFFSET = 0
     bigParticlePositions = []
 
-    def __init__(self, mapSize):
+    def __init__(self, mapSize, maxSpeed):
         pygame.init()
         self.mapSize = mapSize
+        self.maxSpeed = maxSpeed
         self.calculateSizes()
 
     def calculateSizes(self):
@@ -77,9 +80,6 @@ class Drawer:
 
         self.bigParticlePositions.append(positions[0])
 
-        for position in self.bigParticlePositions:
-            pygame.gfxdraw.pixel(self.DISPLAY, int(self.X_OFFSET + (position[0] * self.boxSize)), int(self.Y_OFFSET + self.boxSize * position[1]), self.BIGCOLOR)
-
         for position in positions:
             if i == 0:
                 pygame.draw.circle(self.DISPLAY, self.BIGCOLOR, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.Y_OFFSET + self.boxSize * position[1])), self.boxSize * 50)
@@ -87,12 +87,22 @@ class Drawer:
                 pygame.draw.circle(self.DISPLAY, self.SMALLCOLOR, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.Y_OFFSET + self.boxSize * position[1])), self.boxSize * 5)
             i += 1
 
+        for position in self.bigParticlePositions:
+            pygame.gfxdraw.pixel(self.DISPLAY, int(self.X_OFFSET + (position[0] * self.boxSize)), int(self.Y_OFFSET + self.boxSize * position[1]), self.TRACECOLOR)
+
+        self.drawInfo(positions[0])
+
+
+    def drawInfo(self, position):
         meanArray = np.mean(self.bigParticlePositions, axis=0)
-        self.writeText(1, 1, "Particula grande:", 20, self.MAPBORDER)
-        self.writeText(1, 20, "Posicion media", 20, self.MAPBORDER)
-        self.writeText(1, 30, '(' + str(int(meanArray[0])) + ', ' + str(int(meanArray[1])) + ')', 20, self.MAPBORDER)
-        self.writeText(1, 50, "Posicion actual", 20, self.MAPBORDER)
-        self.writeText(1, 60, '(' + str(int((positions[0])[0])) + ', ' + str(int((positions[0])[1])) + ')', 20, self.MAPBORDER)
+        startX = 50
+        fontSize = 40
+        self.writeText(startX, 1 + self.Y_OFFSET, "Particula grande:", fontSize, self.MAPBORDER)
+        self.writeText(startX, 40 + self.Y_OFFSET, "Posicion media", fontSize, self.MAPBORDER)
+        self.writeText(startX, 60 + self.Y_OFFSET, '(' + str(int(meanArray[0])) + ', ' + str(int(meanArray[1])) + ')', fontSize, self.MAPBORDER)
+        self.writeText(startX, 100 + self.Y_OFFSET, "Posicion actual", fontSize, self.MAPBORDER)
+        self.writeText(startX, 120 + self.Y_OFFSET, '(' + str(int(position[0])) + ', ' + str(int(position[1])) + ')', fontSize, self.MAPBORDER)
+        self.writeText(startX, 160 + self.Y_OFFSET, 'Velocidad = ' + str(self.maxSpeed) + 'm/s', fontSize, self.MAPBORDER)
 
     def update(self, positions):
         for event in pygame.event.get():

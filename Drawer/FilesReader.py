@@ -54,3 +54,12 @@ class FilesReader:
 
             self.dynamicLineNumber = endNumber
             return positions
+
+    def readStatic(self, path):
+        self.staticFile = open(path, "r")
+        lines = self.staticFile.readlines()
+        line = lines[0]
+        mapSize = float(line)
+        line = lines[1]
+        maxSpeed = float(line)
+        return mapSize, maxSpeed

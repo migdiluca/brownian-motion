@@ -35,21 +35,29 @@ def readOneTimeVelocities(lines):
 
     return velocities, lineIndex
 
-def graphIteration(number):
-    velocities = readFile(number)
+def readAllFiles():
+    velocities = [[], []]
+    for i in range(0, 10):
+        velocitiesAux = readFile(i)
+        velocities[0].extend(velocitiesAux[0])
+        velocities[1].extend(velocitiesAux[1])
+
+    return velocities
+
+def velocities():
+    velocities = readAllFiles()
+    print(velocities)
 
     maxValue = max([max(velocities[0]), max(velocities[1])])
-    bins = np.arange(0, maxValue, 0.1)
+    bins = np.arange(0, maxValue, 0.01)
     sns.distplot(velocities[0], hist=True, kde=False, bins=bins,
                  hist_kws={'edgecolor':'black', 'weights': np.ones(len(velocities[0]))/len(velocities[0])})
     sns.distplot(velocities[1], hist=True, kde=False, bins=bins,
                  hist_kws={'edgecolor':'black', 'weights': np.ones(len(velocities[1]))/len(velocities[1])})
 
-    plt.xlabel('Velocidad')
+    plt.xlabel('Velocidad (m/s)')
     plt.ylabel('Probabilidad')
     plt.legend(labels=['Velocidad inicial', 'Velocidad a 2/3 de la simulacion'])
     plt.show()
 
-def velocities():
-    for i in range(0,10):
-        graphIteration(i)
+velocities()

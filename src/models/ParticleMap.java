@@ -13,10 +13,8 @@ public class ParticleMap {
     private final double TIME_STEP = 0.01;
     private final double SMALL_RATIO = 0.005;
     private final double BIG_RATIO = 0.05;
-    private final double MAX_SPEED = 0.1;
     private final double MAP_SIZE = 0.5;
-
-    private final double BOLZTMANN_CONSTANT = 0.082;
+    private double MAX_SPEED = 0.1;
 
     private double currentTime;
     private int numberOfCollisions;
@@ -34,6 +32,11 @@ public class ParticleMap {
     private double indexSize;
     private int indexAmount;
 
+    public ParticleMap(int particleNumber, double maxSpeed) {
+        this(particleNumber);
+        this.MAX_SPEED = maxSpeed;
+    }
+
     public ParticleMap(int particleNumber) {
         this.particlesVersions = new HashMap<>();
         this.currentTime = 0;
@@ -42,18 +45,8 @@ public class ParticleMap {
         System.out.println("Generating particles...");
         generateParticles(particleNumber);
         System.out.println("Done generating");
-        printTemperature();
         initializeParticleVersions();
         calculateInitialCollisions();
-    }
-
-    private void printTemperature() {
-        double sumFactor = 0;
-        for(Particle particle : particleList) {
-            sumFactor += Math.pow(particle.getVel().getX(), 2) + Math.pow(particle.getVel().getY(), 2);
-        }
-        double result = sumFactor / (this.particleList.size() * MAP_SIZE * BOLZTMANN_CONSTANT);
-        System.out.println(result);
     }
 
     private void calculateIndexes() {
@@ -141,6 +134,13 @@ public class ParticleMap {
         particleList.stream().filter(particle -> particle.getRadius() == BIG_RATIO).forEach(particle -> System.out.println(particle.getPos()));
     }
 
+    public double getMaxSpeed() {
+        return MAX_SPEED;
+    }
+
+    public double getMapSize() {
+        return MAP_SIZE;
+    }
 
     public void executeStep() {
         while(!executeStepAux()){

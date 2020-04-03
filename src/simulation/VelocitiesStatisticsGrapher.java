@@ -7,6 +7,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VelocitiesStatisticsGrapher {
     private ParticleMap particleMap;
@@ -45,19 +47,29 @@ public class VelocitiesStatisticsGrapher {
                 bw.write(Double.toString(velocity) + '\n');
             }
 
+            double[] velocities = new double[particleMap.getParticleList().size()];
+            for(int i = 0; i < velocities.length; i++)
+                velocities[i] = 0.0;
+
             while (currentTime < durationTime) {
                 particleMap.executeStep();
-                double previousTime = currentTime;
+                if(particleMap.didBigParticleCrashed())
+                    System.out.println("CRASH");
                 currentTime = particleMap.getCurrentTime();
 
-                if (previousTime <  2 * this.durationTime / 3 && currentTime >=  2 * this.durationTime / 3) {
-                    bw.write("#Velocities at 2/3" + '\n');
-
+                if (currentTime >=  2 * this.durationTime / 3) {
+                    int i = 0;
                     for (Particle particle : particleMap.getParticleList()) {
                         double velocity = Math.sqrt(Math.pow(particle.getVel().getX(), 2) + Math.pow(particle.getVel().getY(), 2));
-                        bw.write(Double.toString(velocity) + '\n');
+                        velocities[i] = velocities[i] + velocity;
+                        i++;
                     }
                 }
+            }
+
+            bw.write("#Velocities at 2/3" + '\n');
+            for (double velocity : velocities) {
+                bw.write(Double.toString(velocity / velocities.length) + '\n');
             }
         }
 
