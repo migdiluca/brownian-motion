@@ -16,9 +16,13 @@ def coefficient_of_diffusion():
     if not default:
         starting_time = utils.ask_for_float("Enter starting time for measuring big particle movement : ")
         ending_time = utils.ask_for_float("Enter ending time for measuring big particle movement : ")
-        step_size = starting_time = utils.ask_for_float("Enter a step size for time bins")
+        step_size = starting_time = utils.ask_for_float("Enter a step size for time bins : ")
 
-    starting_index = int(starting_time/step_size)
+    print("Running with parameters: starting_time = " + str(
+        starting_time) + ", ending_time = " + str(ending_time) + ", step_size: "
+          + str(step_size) + ".")
+
+    starting_index = int(starting_time / step_size)
 
     print("Reading files")
     executions = read_file_particle_positions()
@@ -89,7 +93,7 @@ def msd(bins):
         for i in range(len(bin)):
             start_value = starting_values[i]
             start_array = np.array([start_value[1], start_value[2]])
-            norm_bin.append(np.linalg.norm(np.array([bin[i][1], bin[i][2]]) - start_array)**2)
+            norm_bin.append(np.linalg.norm(np.array([bin[i][1], bin[i][2]]) - start_array) ** 2)
         norms_bins.append(norm_bin)
     return norms_bins
 
@@ -102,6 +106,7 @@ def mean_position_and_time(values):
 
 
 def plot(times, values):
-    df = pd.DataFrame(np.array([list(a) for a in zip(times, [np.mean(value) for value in values])]), columns=["time", "DCM"])
+    df = pd.DataFrame(np.array([list(a) for a in zip(times, [np.mean(value) for value in values])]),
+                      columns=["time", "DCM"])
     sns.lmplot(x="time", y="DCM", data=df, ci=None)
     plt.show()

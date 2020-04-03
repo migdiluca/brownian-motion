@@ -46,7 +46,7 @@ def graphIteration(number):
 
     plt.xlabel('Velocidad')
     plt.ylabel('Probabilidad')
-    plt.legend(labels=['Velocidad inicial','Velocidad a 2/3 de la simulacion'])
+    plt.legend(labels=['Velocidad inicial', 'Velocidad a 2/3 de la simulacion'])
     plt.show()
 
 def velocities():
