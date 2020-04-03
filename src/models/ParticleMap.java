@@ -3,6 +3,7 @@ package models;
 import com.sun.xml.internal.ws.wsdl.writer.document.Part;
 import interfaces.Collision;
 import models.*;
+import sun.security.pkcs11.wrapper.Constants;
 
 import java.util.*;
 
@@ -12,11 +13,15 @@ public class ParticleMap {
     private final double TIME_STEP = 0.01;
     private final double SMALL_RATIO = 0.005;
     private final double BIG_RATIO = 0.05;
-    private final double MAX_SPEED = 1;
+    private final double MAX_SPEED = 0.1;
     private final double MAP_SIZE = 0.5;
+
+    private final double BOLZTMANN_CONSTANT = 0.082;
 
     private double currentTime;
     private int numberOfCollisions;
+
+    private boolean bigParticleCrashed = false;
 
     private List<Particle> particleList = new ArrayList<>();
     private PriorityQueue<Collision> collisionsQueue = new PriorityQueue<>();
@@ -35,8 +40,18 @@ public class ParticleMap {
         System.out.println("Generating particles...");
         generateParticles(particleNumber);
         System.out.println("Done generating");
+        printTemperature();
         initializeParticleVersions();
         calculateInitialCollisions();
+    }
+
+    private void printTemperature() {
+        double sumFactor = 0;
+        for(Particle particle : particleList) {
+            sumFactor += Math.pow(particle.getVel().getX(), 2) + Math.pow(particle.getVel().getY(), 2);
+        }
+        double result = sumFactor / (this.particleList.size() * MAP_SIZE * BOLZTMANN_CONSTANT);
+        System.out.println(result);
     }
 
     private void calculateIndexes() {
@@ -63,7 +78,7 @@ public class ParticleMap {
     }
 
     private void generateParticles(int particleNumber) {
-        Particle bigParticle = new Particle((double) MAP_SIZE / 2, (double) MAP_SIZE / 2, 0, 0, BIG_RATIO, 100);
+        Particle bigParticle = new Particle((double) MAP_SIZE / 2, (double) MAP_SIZE / 2, 0, 0, BIG_RATIO, 0.1);
         particleList.add(bigParticle);
         addToMap(bigParticle);
 
@@ -89,7 +104,7 @@ public class ParticleMap {
         }
 
         Vector vel = generateRandomSpeed();
-        Particle newParticle = new Particle(x, y, vel.getX(), vel.getY(), SMALL_RATIO, 0.1);
+        Particle newParticle = new Particle(x, y, vel.getX(), vel.getY(), SMALL_RATIO, 0.0001);
         particleList.add(newParticle);
         addToMap(newParticle);
     }
@@ -145,6 +160,9 @@ public class ParticleMap {
                     for (Particle p : involvedParticles.keySet()) {
                         this.particlesVersions.compute(p, (k, v) -> v != null ? v + 1 : null);
                         calculateNewCollisionsExceptInvolved(p, involvedParticles);
+
+                        if(involvedParticles.size() == 1 && p.equals(particleList.get(0)))
+                            bigParticleCrashed = true;
                     }
                     return true;
                 } else {
@@ -156,6 +174,10 @@ public class ParticleMap {
         }
         advanceTime(TIME_STEP);
         return false;
+    }
+
+    public boolean didBigParticleCrashed() {
+        return bigParticleCrashed;
     }
 
     private void advanceTime(double step) {
