@@ -10,8 +10,8 @@ def coefficient_of_diffusion():
     print("-> Coefficient of diffusion selected")
 
     default = utils.ask_boolean("Do you want to use default values? 'y' for yes and 'n' for no : ")
-    starting_time = 70
-    ending_time = 150
+    starting_time = 50
+    ending_time = 100
     step_size = 1
     if not default:
         starting_time = utils.ask_for_float("Enter starting time for measuring big particle movement : ")
@@ -41,7 +41,7 @@ def big_particle(starting_time, ending_time, step_size):
     print("[BIG PARTICLE] Calculating squared distances for each execution")
     bins_with_sd = msd(bins[starting_index:])
 
-    plot(times[starting_index:], bins_with_sd)
+    plot(times[starting_index:-1], [np.mean(bin) for bin in bins_with_sd])
 
 
 def small_particle(starting_time, ending_time, step_size):
@@ -58,7 +58,7 @@ def small_particle(starting_time, ending_time, step_size):
     print("[SMALL PARTICLE] Calculating squared distances for each execution")
     bins_with_sd = msd(bins[starting_index:])
 
-    plot(times[starting_index:], bins_with_sd)
+    plot(times[starting_index:-1], [np.mean(bin) for bin in bins_with_sd])
 
 
 def read_file_particle_positions(dir):
@@ -130,7 +130,38 @@ def mean_position_and_time(values):
 
 
 def plot(times, values):
-    df = pd.DataFrame(np.array([list(a) for a in zip(times, [np.mean(value) for value in values])]),
-                      columns=["time", "DCM"])
-    sns.lmplot(x="time", y="DCM", data=df, ci=None)
+    m = linear_regression([(x-min(times), y) for x, y in zip(times, values)])
+    print("Coefficient of diffusion: D = "+str(m/2))
+    plt.plot(times, np.array([t-min(times) for t in times])*m, 'b')
+    plt.plot(times, values, 'ro')
     plt.show()
+
+
+def linear_regression(data):
+    sum_of_xsquared = sum([x**2 for x, y in data])
+    sum_of_xy = sum([x*y for x, y in data])
+
+    return sum_of_xy/sum_of_xsquared
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
