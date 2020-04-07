@@ -130,11 +130,14 @@ def mean_position_and_time(values):
 
 
 def plot(times, values):
-    m = linear_regression([(x-min(times), y) for x, y in zip(times, values)])
+    t_sustract_min = [t-min(times) for t in times]
+    m = linear_regression([(x, y) for x, y in zip(t_sustract_min, values)])
     print("Coefficient of diffusion: D = "+str(m/2))
-    plt.plot(times, np.array([t-min(times) for t in times])*m, 'b')
+    plt.plot(times, np.array(t_sustract_min)*m, 'b')
     plt.plot(times, values, 'ro')
     plt.show()
+
+    plot_linear_regression_error(t_sustract_min, values, m)
 
 
 def linear_regression(data):
@@ -144,8 +147,21 @@ def linear_regression(data):
     return sum_of_xy/sum_of_xsquared
 
 
+def plot_linear_regression_error(times, data, m):
+    m_values = np.arange(-0.001, 0.005, 0.000001)
+    error_values = [error([(x, y) for x, y in zip(times, data)], m) for m in m_values]
+    plt.figure()
+    plt.axvline(m, color='r')
+    plt.plot(m_values, error_values)
+    plt.show()
 
 
+def error(data, parameter):
+    err = 0
+    for pair in data:
+        x, y = pair
+        err = err + (y-x*parameter)**2
+    return err
 
 
 
