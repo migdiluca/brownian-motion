@@ -46,10 +46,9 @@ def readAllFiles():
 
 def velocities():
     velocities = readAllFiles()
-    print(velocities)
 
     maxValue = max([max(velocities[0]), max(velocities[1])])
-    bins = np.arange(0, maxValue, 0.01)
+    bins = np.arange(0, maxValue, 0.0025)
     sns.distplot(velocities[0], hist=True, kde=False, bins=bins,
                  hist_kws={'edgecolor':'black', 'weights': np.ones(len(velocities[0]))/len(velocities[0])})
     sns.distplot(velocities[1], hist=True, kde=False, bins=bins,
@@ -57,7 +56,5 @@ def velocities():
 
     plt.xlabel('Velocidad (m/s)')
     plt.ylabel('Probabilidad')
-    plt.legend(labels=['Velocidad inicial', 'Velocidad a 2/3 de la simulacion'])
+    plt.legend(labels=['Velocidad inicial', 'Velocidad a 2/3 de la simulacion'], loc='upper center', bbox_to_anchor=(0.5, -0.1), shadow=True, ncol=3)
     plt.show()
-
-velocities()

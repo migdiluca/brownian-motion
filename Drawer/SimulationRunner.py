@@ -16,7 +16,7 @@ class SimulationRunner:
         while len(positions) > 0:
             drawer.update(positions)
             positions = reader.readNextPosition()
-            skipPositions = 150
+            skipPositions = 50
             while skipPositions > 0:
                 reader.readNextPosition()
                 skipPositions -= 1

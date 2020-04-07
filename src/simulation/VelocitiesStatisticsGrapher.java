@@ -15,11 +15,12 @@ public class VelocitiesStatisticsGrapher {
 
     private double durationTime;
     private int numberOfExecutions;
+    private int particleNumber;
 
-
-    public VelocitiesStatisticsGrapher(double durationTime, int numberOfExecutions) {
+    public VelocitiesStatisticsGrapher(int particleNumber, double durationTime, int numberOfExecutions) {
         this.durationTime = durationTime;
         this.numberOfExecutions = numberOfExecutions;
+        this.particleNumber = particleNumber;
     }
 
     public void run() throws IOException {
@@ -29,7 +30,7 @@ public class VelocitiesStatisticsGrapher {
 
         int[][] values = new int[this.numberOfExecutions][];
         for (int e = 0; e < this.numberOfExecutions; e++) {
-            this.particleMap = new ParticleMap(300);
+            this.particleMap = new ParticleMap(particleNumber);
             runExecution(e);
         }
 
@@ -51,17 +52,17 @@ public class VelocitiesStatisticsGrapher {
             for(int i = 0; i < velocities.length; i++)
                 velocities[i] = 0.0;
 
+            int sumAmount = 0;
             while (currentTime < durationTime) {
                 particleMap.executeStep();
-                if(particleMap.didBigParticleCrashed())
-                    System.out.println("CRASH");
                 currentTime = particleMap.getCurrentTime();
 
                 if (currentTime >=  2 * this.durationTime / 3) {
                     int i = 0;
+                    sumAmount++;
                     for (Particle particle : particleMap.getParticleList()) {
                         double velocity = Math.sqrt(Math.pow(particle.getVel().getX(), 2) + Math.pow(particle.getVel().getY(), 2));
-                        velocities[i] = velocities[i] + velocity;
+                        velocities[i] += velocity;
                         i++;
                     }
                 }
@@ -69,7 +70,7 @@ public class VelocitiesStatisticsGrapher {
 
             bw.write("#Velocities at 2/3" + '\n');
             for (double velocity : velocities) {
-                bw.write(Double.toString(velocity / velocities.length) + '\n');
+                bw.write(Double.toString(velocity / sumAmount) + '\n');
             }
         }
 

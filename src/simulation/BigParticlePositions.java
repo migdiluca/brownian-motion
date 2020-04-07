@@ -4,6 +4,7 @@ import models.Particle;
 import models.ParticleMap;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -35,6 +36,9 @@ public class BigParticlePositions {
     private void runExecution(int e, ParticleMap particleMap, String dir, int type) throws IOException {
         Particle particle = type == BIG_PARTICLE ? particleMap.getBigParticle() : particleMap.getParticleList().get(1);
 
+        (new File("output_files")).mkdir();
+        (new File("output_files/coefficient_of_diffusion")).mkdir();
+        (new File("output_files/coefficient_of_diffusion/" + dir)).mkdir();
         double lastX = particle.getPos().getX(), lastY = particle.getPos().getY();
         try(BufferedWriter bw = new BufferedWriter(new FileWriter("output_files/coefficient_of_diffusion/"+dir+"/positions"+e))){
             double currentTime = 0;

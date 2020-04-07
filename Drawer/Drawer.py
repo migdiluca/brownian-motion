@@ -80,15 +80,15 @@ class Drawer:
 
         self.bigParticlePositions.append(positions[0])
 
+        pygame.draw.circle(self.DISPLAY, self.BIGCOLOR, (int(self.X_OFFSET + self.boxSize * positions[0][0]), int(self.Y_OFFSET + self.boxSize * positions[0][1])), self.boxSize * 50)
+        for position in self.bigParticlePositions:
+            pygame.gfxdraw.pixel(self.DISPLAY, int(self.X_OFFSET + (position[0] * self.boxSize)), int(self.Y_OFFSET + self.boxSize * position[1]), self.TRACECOLOR)
+
         for position in positions:
-            if i == 0:
-                pygame.draw.circle(self.DISPLAY, self.BIGCOLOR, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.Y_OFFSET + self.boxSize * position[1])), self.boxSize * 50)
-            else:
+            if i > 0:
                 pygame.draw.circle(self.DISPLAY, self.SMALLCOLOR, (int(self.X_OFFSET + self.boxSize * position[0]), int(self.Y_OFFSET + self.boxSize * position[1])), self.boxSize * 5)
             i += 1
 
-        for position in self.bigParticlePositions:
-            pygame.gfxdraw.pixel(self.DISPLAY, int(self.X_OFFSET + (position[0] * self.boxSize)), int(self.Y_OFFSET + self.boxSize * position[1]), self.TRACECOLOR)
 
         self.drawInfo(positions[0])
 

@@ -33,8 +33,14 @@ public class ParticleMap {
     private int indexAmount;
 
     public ParticleMap(int particleNumber, double maxSpeed) {
-        this(particleNumber);
         this.MAX_SPEED = maxSpeed;
+        this.particlesVersions = new HashMap<>();
+        this.currentTime = 0;
+        this.numberOfCollisions = 0;
+        calculateIndexes();
+        generateParticles(particleNumber);
+        initializeParticleVersions();
+        calculateInitialCollisions();
     }
 
     public ParticleMap(int particleNumber) {
@@ -42,9 +48,7 @@ public class ParticleMap {
         this.currentTime = 0;
         this.numberOfCollisions = 0;
         calculateIndexes();
-        System.out.println("Generating particles...");
         generateParticles(particleNumber);
-        System.out.println("Done generating");
         initializeParticleVersions();
         calculateInitialCollisions();
     }

@@ -29,14 +29,6 @@ public class TemperatureSimulation {
 
     public void run() throws IOException {
         int[][] values = new int[this.numberOfExecutions][];
-        for(int e =0; e<this.numberOfExecutions; e++){
-            ParticleMap particleMap = new ParticleMap(particleNumber);
-            runExecution(Integer.toString(e), particleMap);
-        }
-    };
-
-    public void runTemperature() throws IOException {
-        int[][] values = new int[this.numberOfExecutions][];
 
         for(int i = 0; i <maxSpeeds.size(); i++){
             currentSpeed = maxSpeeds.get(i);

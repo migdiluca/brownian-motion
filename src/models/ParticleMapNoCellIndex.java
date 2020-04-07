@@ -8,10 +8,10 @@ import java.util.*;
 
 public class ParticleMapNoCellIndex {
 
-    private final int SMALL_RATIO = 5;
-    private final int BIG_RATIO = 50;
-    private final int MAX_SPEED = 1000;
-    private final int MAP_SIZE = 500;
+    private final double SMALL_RATIO = 0.005;
+    private final double BIG_RATIO = 0.05;
+    private final double MAP_SIZE = 0.5;
+    private double MAX_SPEED = 0.1;
 
     private double currentTime;
 
@@ -42,7 +42,7 @@ public class ParticleMapNoCellIndex {
 
     private void generateParticles(int particleNumber) {
         //TODO: check mass
-        Particle bigParticle = new Particle((double) MAP_SIZE / 2, (double) MAP_SIZE / 2, 0, 0, BIG_RATIO, 1);
+        Particle bigParticle = new Particle((double) MAP_SIZE / 2, (double) MAP_SIZE / 2, 0, 0, BIG_RATIO, 0.1);
         particleList.add(bigParticle);
 
         while (particleNumber > 0) {
@@ -66,9 +66,15 @@ public class ParticleMapNoCellIndex {
             }
         }
 
-        //TODO: set a random initial mass
-        Particle newParticle = new Particle(x, y, (double) Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1), (double) Math.random() * MAX_SPEED * (Math.random() >= 0.5 ? 1 : -1), SMALL_RATIO, 1);
+        Vector vel = generateRandomSpeed();
+        Particle newParticle = new Particle(x, y, vel.getX(), vel.getY(), SMALL_RATIO, 0.0001);
         particleList.add(newParticle);
+    }
+
+    private Vector generateRandomSpeed() {
+        double module = Math.random() * MAX_SPEED;
+        double angle = Math.random() * 2 * Math.PI;
+        return new Vector(Math.cos(angle) * module, Math.sin(angle) * module);
     }
 
     public void printBigParticle() {
@@ -125,8 +131,10 @@ public class ParticleMapNoCellIndex {
         for (Particle otherParticle : particleList) {
             if (!particle.equals(otherParticle) && (involvedParticles == null || !involvedParticles.containsKey(otherParticle))) {
                 Collision newCollision = new ParticleCollision(particle, otherParticle, particlesVersions.get(particle), particlesVersions.get(otherParticle), this.currentTime);
-                if (!Double.isInfinite(newCollision.getTime())) {
-                    collisionsQueue.add(newCollision);
+                if(involvedParticles == null || !involvedParticles.containsKey(otherParticle)){
+                    if (!Double.isInfinite(newCollision.getTime())) {
+                        collisionsQueue.add(newCollision);
+                    }
                 }
             }
         }
