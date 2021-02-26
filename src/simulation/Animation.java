@@ -8,9 +8,7 @@ import java.io.*;
 import java.util.List;
 
 public class Animation {
-    private static final int NUMBER_OF_ITERATIONS = 100000;
-
-    public Animation(int particleNumber, double maxSpeed) throws IOException {
+    public Animation(int particleNumber, double maxSpeed, int numberOfIterations) throws IOException {
         long timeStart = System.currentTimeMillis();
         ParticleMap particleMap = new ParticleMap(particleNumber, maxSpeed);
         List<Particle> particles = particleMap.getParticleList();
@@ -21,18 +19,14 @@ public class Animation {
         }
 
         try (BufferedWriter br = new BufferedWriter(new FileWriter("animation_dynamic"))) {
-            for (int i = 0; i < NUMBER_OF_ITERATIONS; i++) {
+            for (int i = 0; i < numberOfIterations; i++) {
                 br.write("#T" + i + " " + particleMap.getCurrentTime() + '\n');
                 for (Particle particle : particles) {
                     br.write(particle.getPos().getX() * 1000 + " " + particle.getPos().getY() * 1000 + '\n');
                 }
                 particleMap.executeStep();
-                if (particleMap.didBigParticleCrashed())
-                    System.out.println("CRASHED");
             }
         }
-
-        particleMap.printBigParticle();
 
         System.out.println(System.currentTimeMillis() - timeStart);
 

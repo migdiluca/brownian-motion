@@ -1,8 +1,6 @@
 package models;
 
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
 import interfaces.Collision;
-import models.*;
 
 import java.util.*;
 

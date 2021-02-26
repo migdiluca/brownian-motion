@@ -15,8 +15,8 @@ class Drawer:
     DISPLAY = None
     MAIN_SURFACE = None
     SECONDARY_SURFACE = None
-    xResolution = 1920
-    yResolution = 1080
+    xResolution = 1600
+    yResolution = 900
     WHITE = (255, 255, 255)
     RED = (255, 40, 40)
     BLUE = (35, 55, 184)
@@ -36,6 +36,7 @@ class Drawer:
 
     def __init__(self, mapSize, maxSpeed):
         pygame.init()
+        pygame.display.set_caption('Simulation display')
         self.mapSize = mapSize
         self.maxSpeed = maxSpeed
         self.calculateSizes()
@@ -46,7 +47,7 @@ class Drawer:
         self.boxSize = int(min(width / self.mapSize, height / self.mapSize))
         self.X_OFFSET = (width - (self.mapSize * self.boxSize)) / 2
         self.Y_OFFSET = (height - (self.mapSize * self.boxSize)) / 2
-        self.DISPLAY = pygame.display.set_mode((self.xResolution, self.yResolution), pygame.FULLSCREEN, 32)
+        self.DISPLAY = pygame.display.set_mode((self.xResolution, self.yResolution), 0, 32)
         self.DISPLAY.fill(self.BACKGROUND)
 
     def writeText(self, x, y, text, size, color):
@@ -96,18 +97,23 @@ class Drawer:
     def drawInfo(self, position):
         meanArray = np.mean(self.bigParticlePositions, axis=0)
         startX = 50
-        fontSize = 40
-        self.writeText(startX, 1 + self.Y_OFFSET, "Particula grande:", fontSize, self.MAPBORDER)
-        self.writeText(startX, 40 + self.Y_OFFSET, "Posicion media", fontSize, self.MAPBORDER)
+        fontSize = 25
+        self.writeText(startX, 1 + self.Y_OFFSET, "Big particle:", fontSize, self.MAPBORDER)
+        self.writeText(startX, 40 + self.Y_OFFSET, "Mean position", fontSize, self.MAPBORDER)
         self.writeText(startX, 60 + self.Y_OFFSET, '(' + str(int(meanArray[0])) + ', ' + str(int(meanArray[1])) + ')', fontSize, self.MAPBORDER)
-        self.writeText(startX, 100 + self.Y_OFFSET, "Posicion actual", fontSize, self.MAPBORDER)
+        self.writeText(startX, 100 + self.Y_OFFSET, "Current position", fontSize, self.MAPBORDER)
         self.writeText(startX, 120 + self.Y_OFFSET, '(' + str(int(position[0])) + ', ' + str(int(position[1])) + ')', fontSize, self.MAPBORDER)
-        self.writeText(startX, 160 + self.Y_OFFSET, 'Velocidad = ' + str(self.maxSpeed) + 'm/s', fontSize, self.MAPBORDER)
+        self.writeText(startX, 160 + self.Y_OFFSET, 'Initial max speed = ' + str(self.maxSpeed) + 'm/s', fontSize, self.MAPBORDER)
 
     def update(self, positions):
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
+                raise Exception("Window closed")
+            elif event.type == KEYDOWN:
+               if event.key == K_ESCAPE:
+                   pygame.quit()
+                   raise Exception("Window closed")
         self.drawWalls()
         self.drawCircles(positions)
         pygame.display.update()
@@ -116,5 +122,11 @@ class Drawer:
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
+                raise Exception("Window closed")
+            elif event.type == KEYDOWN:
+               if event.key == K_ESCAPE:
+                   pygame.quit()
+                   raise Exception("Window closed")
+
         self.drawWalls()
         pygame.display.update()

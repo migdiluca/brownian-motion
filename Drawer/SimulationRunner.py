@@ -20,5 +20,3 @@ class SimulationRunner:
             while skipPositions > 0:
                 reader.readNextPosition()
                 skipPositions -= 1
-
-        time.sleep(1000)
