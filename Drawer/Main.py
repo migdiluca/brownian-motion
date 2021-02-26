@@ -10,4 +10,4 @@ paths = ["../../current", "../../particles2000", "../../particles3000", "../../p
 
 simulationRunner = SimulationRunner()
 
-simulationRunner.runSingleSimulation("../")
+simulationRunner.runSingleSimulation("./")
