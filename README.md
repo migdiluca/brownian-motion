@@ -24,7 +24,7 @@ Note: because of the event driven approach one may realise that by decreasing th
 All arguments should be specified in the format *key=value* where key may be one of the previous values.
 
 Arguments example: 
-'width=100 numberOfParticles=10000'
+'particleNumber=100 maxSpeed=0.5'
 
 After the simulation ends two files will be created: 'dynamicFile' and 'staticFile'.
 
